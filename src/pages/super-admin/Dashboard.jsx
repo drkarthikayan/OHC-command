@@ -10,15 +10,19 @@ import {
 import { greeting, fmtDate, fmtCurrency, timeAgo, statusBadge, initials } from '../../utils/formatters';
 import TenantsPage from './Tenants';
 import UsersPage from './Users';
+import BillingPage from './Billing';
+import AnalyticsPage from './Analytics';
+import SettingsPage from './Settings';
 
 // ── NAV ITEMS ─────────────────────────────────────────────
 const NAV = [
-  { id: 'dashboard',  label: 'Dashboard',   icon: '⚡', path: '/super-admin/dashboard' },
-  { id: 'tenants',    label: 'Tenants',      icon: '🏢', path: '/super-admin/tenants' },
-  { id: 'billing',    label: 'Billing',      icon: '💳', path: '/super-admin/billing' },
-  { id: 'users',      label: 'Users',        icon: '👥', path: '/super-admin/users' },
-  { id: 'analytics',  label: 'Analytics',    icon: '📊', path: '/super-admin/analytics' },
-  { id: 'settings',   label: 'Settings',     icon: '⚙️', path: '/super-admin/settings' },
+  { id: 'dashboard',  label: 'Dashboard',    icon: '⚡', path: '/super-admin/dashboard' },
+  { id: 'tenants',    label: 'Tenants',       icon: '🏢', path: '/super-admin/tenants' },
+  { id: 'billing',    label: 'Billing',       icon: '💳', path: '/super-admin/billing' },
+  { id: 'users',      label: 'Users',         icon: '👥', path: '/super-admin/users' },
+  { id: 'analytics',  label: 'Analytics',     icon: '📊', path: '/super-admin/analytics' },
+  { id: 'activity',   label: 'Activity Log',  icon: '🕐', path: '/super-admin/activity' },
+  { id: 'settings',   label: 'Settings',      icon: '⚙️', path: '/super-admin/settings' },
 ];
 
 // ── SIDEBAR ───────────────────────────────────────────────
@@ -223,6 +227,45 @@ function DashboardView({ stats, tenants, activity, loading }) {
   );
 }
 
+// ── ACTIVITY LOG VIEW ─────────────────────────────────────
+function ActivityLogView({ activity }) {
+  if (!activity.length) return (
+    <div className="p-6">
+      <div className="mb-6">
+        <h1 className="font-serif text-3xl text-text">Activity Log</h1>
+        <p className="text-muted text-sm mt-0.5">Actions taken in this session</p>
+      </div>
+      <div className="card p-12 text-center">
+        <div className="text-4xl mb-3">🕐</div>
+        <div className="text-muted text-sm">No activity yet — actions you take will appear here</div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="p-6 max-w-3xl">
+      <div className="mb-6">
+        <h1 className="font-serif text-3xl text-text">Activity Log</h1>
+        <p className="text-muted text-sm mt-0.5">{activity.length} recent actions</p>
+      </div>
+      <div className="card overflow-hidden">
+        {activity.map((a, i) => (
+          <div key={i} className="flex items-start gap-3 px-4 py-3 border-b border-border/50 last:border-0 hover:bg-surface2/30 transition-colors">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 mt-0.5"
+              style={{ background: (a.color || 'var(--accent)') + '20' }}>
+              {a.icon}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm text-text">{a.text}</div>
+              <div className="text-xs text-muted mt-0.5">{timeAgo(a.time)}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── PLACEHOLDER VIEWS ─────────────────────────────────────
 const PlaceholderView = ({ title, icon }) => (
   <div className="p-6 flex items-center justify-center min-h-96">
@@ -274,12 +317,13 @@ export default function SuperAdminLayout() {
       setPendingCount(pending);
     }).catch(() => {});
 
-    // Load recent activity (last 20 audit logs across all tenants)
-    // We'll load from a top-level audit collection if it exists
+    // Load recent activity from Firestore (falls back to empty)
     getDocs(
-      query(collection(db, 'activity'), orderBy('createdAt', 'desc'), limit(20))
+      query(collection(db, 'activity'), orderBy('createdAt', 'desc'), limit(50))
     ).then(snap => {
-      setActivity(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      if (snap.docs.length) {
+        setActivity(snap.docs.map(d => ({ id: d.id, ...d.data(), time: d.data().createdAt?.toDate?.()?.toISOString() || new Date().toISOString() })));
+      }
     }).catch(() => setActivity([]));
 
     return () => unsub();
@@ -298,10 +342,11 @@ export default function SuperAdminLayout() {
         <Routes>
           <Route path="dashboard"  element={<DashboardView stats={stats} tenants={tenants} activity={activity} loading={loading} />} />
           <Route path="tenants"    element={<TenantsPage />} />
-          <Route path="billing"    element={<PlaceholderView title="Billing"   icon="💳" />} />
+          <Route path="billing"    element={<BillingPage />} />
           <Route path="users"      element={<UsersPage />} />
-          <Route path="analytics"  element={<PlaceholderView title="Analytics" icon="📊" />} />
-          <Route path="settings"   element={<PlaceholderView title="Settings"  icon="⚙️" />} />
+          <Route path="analytics"  element={<AnalyticsPage />} />
+          <Route path="activity"   element={<ActivityLogView activity={activity} />} />
+          <Route path="settings"   element={<SettingsPage />} />
           <Route path="*"          element={<DashboardView stats={stats} tenants={tenants} activity={activity} loading={loading} />} />
         </Routes>
       </main>

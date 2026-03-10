@@ -7,10 +7,8 @@ import { auth } from './config/firebase';
 import Login from './pages/Login';
 import SuperAdminLogin from './pages/super-admin/Login';
 import SuperAdminLayout from './pages/super-admin/Dashboard';
+import StaffLayout from './pages/portal/StaffLayout';
 
-const PortalDashboard = () => (
-  <div className="p-8 text-text font-serif text-2xl">Portal Dashboard — Coming soon</div>
-);
 
 function StaffRoute({ children }) {
   const { staffUser } = useAuthStore();
@@ -62,9 +60,7 @@ export default function App() {
         <Route path="/super-admin/login" element={<SuperAdminLogin />} />
         <Route path="/portal/*" element={
           <StaffRoute>
-            <Routes>
-              <Route path="dashboard" element={<PortalDashboard />} />
-            </Routes>
+            <StaffLayout />
           </StaffRoute>
         } />
         <Route path="/super-admin/*" element={
