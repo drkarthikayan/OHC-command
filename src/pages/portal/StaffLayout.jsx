@@ -191,9 +191,9 @@ export default function StaffLayout() {
                 </div>
               )}
               {visibleItems.map(item => {
-                const isActive = currentPath === item.path || (currentPath === 'portal' && item.path === 'dashboard');
+                const isActive = location.pathname === `/portal/${item.path}` || (location.pathname === '/portal' && item.path === 'dashboard');
                 return (
-                  <Link key={item.id} to={item.path}
+                  <Link key={item.id} to={`/portal/${item.path}`}
                     onClick={() => setMobileOpen(false)}
                     className={`nav-item ${isActive ? 'active' : ''} ${!sidebarOpen ? 'justify-center px-0 mx-auto w-11 h-11' : ''}`}>
                     <div className={`nav-item-icon ${isActive ? '' : 'opacity-60'}`}>
