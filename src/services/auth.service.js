@@ -1,18 +1,7 @@
 import { auth, db } from '../config/firebase';
-import {
-  signInWithEmailAndPassword,
-  signOut,
-} from 'firebase/auth';
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  doc,
-  getDoc,
-} from 'firebase/firestore';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 
-// ── SUPER ADMIN LOGIN (Firebase Auth) ─────────────────────
 export async function superAdminLogin(email, password) {
   const cred = await signInWithEmailAndPassword(auth, email, password);
   const token = await cred.user.getIdTokenResult(true);
@@ -32,33 +21,24 @@ export async function superAdminLogout() {
   await signOut(auth);
 }
 
-// ── STAFF LOGIN (Firestore-based, Staff ID + Password) ────
 export async function staffLogin(tenantId, staffId, password) {
-  // Look up user in merchants/{tenantId}/users where staffId matches
   const usersRef = collection(db, 'merchants', tenantId, 'users');
   const q = query(usersRef, where('staffId', '==', staffId.toLowerCase()));
   const snap = await getDocs(q);
-
   if (snap.empty) throw new Error('Staff ID not found.');
-
   const userDoc = snap.docs[0];
   const user = { id: userDoc.id, ...userDoc.data() };
-
-  if (user.status === 'suspended') throw new Error('Account suspended. Contact your admin.');
-  if (user.status === 'Pending') throw new Error('Account pending approval. Contact your admin.');
+  if (user.status === 'suspended' || user.status === 'Suspended') throw new Error('Account suspended. Contact your admin.');
+  if (user.status === 'Pending' || user.status === 'pending') throw new Error('Account pending approval. Contact your admin.');
   if (user.password !== password) throw new Error('Incorrect password.');
-
-  // Get tenant info
   const tenantSnap = await getDoc(doc(db, 'merchants', tenantId));
   const tenant = tenantSnap.exists() ? { id: tenantId, ...tenantSnap.data() } : null;
-
   return { user, tenant };
 }
 
-// ── GET ALL TENANTS (for login screen dropdown) ───────────
 export async function getTenants() {
-  const snap = await getDocs(
-    query(collection(db, 'merchants'), where('status', 'in', ['active', 'trial']))
-  );
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  const snap = await getDocs(collection(db, 'merchants'));
+  return snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .filter(t => ['active', 'Active', 'trial', 'Trial'].includes(t.status));
 }
