@@ -8,6 +8,13 @@ import EmployeesPage from './Employees';
 import OpdPage from './Opd';
 import PharmacyPage from './Pharmacy';
 import CertificatesPage from './Certificates';
+import PreEmploymentPage from './PreEmployment';
+import InjuryRegisterPage from './InjuryRegister';
+import PeriodicExamPage from './PeriodicExam';
+import HospitalTrackerPage from './HospitalTracker';
+import HealthTrackerPage from './HealthTracker';
+import BiomedicalWastePage from './BiomedicalWaste';
+import MedicalCampaignsPage from './MedicalCampaigns';
 
 // Role-based nav: what each role can see
 const NAV_ITEMS = [
@@ -15,7 +22,14 @@ const NAV_ITEMS = [
   { id: 'employees',    label: 'Employees',    icon: '👤', path: 'employees',    roles: ['doctor','nurse','admin','staff'] },
   { id: 'opd',          label: 'OPD / Visits', icon: '📋', path: 'opd',          roles: ['doctor','nurse','admin'] },
   { id: 'pharmacy',     label: 'Pharmacy',     icon: '💊', path: 'pharmacy',     roles: ['pharmacy','doctor','admin'] },
-  { id: 'certificates', label: 'Certificates', icon: '📜', path: 'certificates', roles: ['doctor','admin'] },
+  { id: 'certificates',   label: 'Certificates',     icon: '📜', path: 'certificates',   roles: ['doctor','admin'] },
+  { id: 'pre-employment', label: 'Pre-Employment',  icon: '📋', path: 'pre-employment', roles: ['doctor','nurse','admin'] },
+  { id: 'injuries',       label: 'Injury Register', icon: '🩹', path: 'injuries',       roles: ['doctor','nurse','admin'] },
+  { id: 'periodic-exam',   label: 'Periodic Exam',    icon: '🔬', path: 'periodic-exam',   roles: ['doctor','nurse','admin'] },
+  { id: 'hospital',        label: 'Hospital Tracker', icon: '🏥', path: 'hospital',        roles: ['doctor','nurse','admin'] },
+  { id: 'health-tracker',   label: 'Health Tracker',    icon: '💚', path: 'health-tracker',   roles: ['doctor','nurse','admin'] },
+  { id: 'campaigns',        label: 'Campaigns',         icon: '🏥', path: 'campaigns',        roles: ['doctor','nurse','admin'] },
+  { id: 'biomedical-waste', label: 'Biomedical Waste',  icon: '♻️', path: 'biomedical-waste', roles: ['doctor','nurse','admin'] },
 ];
 
 function RoleBadge({ role }) {
@@ -134,7 +148,14 @@ export default function StaffLayout() {
             <Route path="employees"    element={navItems.find(n=>n.id==='employees')    ? <EmployeesPage />    : <Forbidden />} />
             <Route path="opd"          element={navItems.find(n=>n.id==='opd')          ? <OpdPage />          : <Forbidden />} />
             <Route path="pharmacy"     element={navItems.find(n=>n.id==='pharmacy')     ? <PharmacyPage />     : <Forbidden />} />
-            <Route path="certificates" element={navItems.find(n=>n.id==='certificates') ? <CertificatesPage /> : <Forbidden />} />
+            <Route path="certificates"    element={navItems.find(n=>n.id==='certificates')    ? <CertificatesPage />    : <Forbidden />} />
+            <Route path="pre-employment" element={navItems.find(n=>n.id==='pre-employment') ? <PreEmploymentPage /> : <Forbidden />} />
+            <Route path="injuries"      element={navItems.find(n=>n.id==='injuries')      ? <InjuryRegisterPage />  : <Forbidden />} />
+            <Route path="periodic-exam"  element={navItems.find(n=>n.id==='periodic-exam')  ? <PeriodicExamPage />    : <Forbidden />} />
+            <Route path="hospital"       element={navItems.find(n=>n.id==='hospital')       ? <HospitalTrackerPage /> : <Forbidden />} />
+            <Route path="health-tracker"   element={navItems.find(n=>n.id==='health-tracker')   ? <HealthTrackerPage />    : <Forbidden />} />
+            <Route path="campaigns"       element={navItems.find(n=>n.id==='campaigns')       ? <MedicalCampaignsPage /> : <Forbidden />} />
+            <Route path="biomedical-waste" element={navItems.find(n=>n.id==='biomedical-waste') ? <BiomedicalWastePage />  : <Forbidden />} />
             <Route path="*"            element={<Navigate to="dashboard" replace />} />
           </Routes>
         </main>

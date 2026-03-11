@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuth()       { return request.auth != null; }
+    function myMerchant()   { return request.auth.token.merchantId; }
+    function owns(mid)      { return isAuth() && myMerchant() == mid; }
+    function role()         { return request.auth.token.role; }
+    function isSuperAdmin() { return isAuth() && role() == 'super_admin'; }
+    function isAdmin()      { return isAuth() && role() in ['ohc_admin','super_admin']; }
+    function isClinical()   { return isAuth() && role() in ['doctor','nurse','ohc_admin','super_admin']; }
+    function isDoctor()     { return isAuth() && role() in ['doctor','ohc_admin','super_admin']; }
+    function isPharmacy()   { return isAuth() && role() in ['pharmacy','doctor','ohc_admin','super_admin']; }
+
+    // Staff login does NOT use Firebase Auth — they authenticate via Firestore lookup.
+    // All subcollection writes from staff go through unauthenticated requests.
+    // We allow reads+writes on all merchant subcollections for unauthenticated requests
+    // (the app enforces role checks client-side via Zustand session).
+    // Super Admin actions still require Firebase Auth + custom claims.
+
+    match /{document=**} {
+      allow read, write: if isSuperAdmin();
+    }
+
+    match /merchants/{merchantId} {
+      // Allow unauthenticated read for login dropdown
+      allow read: if !isAuth() || owns(merchantId);
+
+      // All subcollections — allow read/write if:
+      //   a) Super admin (caught by wildcard above), OR
+      //   b) Authenticated staff who owns this merchant, OR
+      //   c) Unauthenticated (staff session — role enforced client-side)
+      match /employees/{id}       { allow read, write: if !isAuth() || owns(merchantId); }
+      match /opd/{id}             { allow read, write: if !isAuth() || owns(merchantId); }
+      match /pharmacy/{id}        { allow read, write: if !isAuth() || owns(merchantId); }
+      match /dispensary/{id}      { allow read, write: if !isAuth() || owns(merchantId); }
+      match /injuries/{id}        { allow read, write: if !isAuth() || owns(merchantId); }
+      match /certificates/{id}    { allow read, write: if !isAuth() || owns(merchantId); }
+      match /hospitalTracker/{id} { allow read, write: if !isAuth() || owns(merchantId); }
+      match /healthConditions/{id}{ allow read, write: if !isAuth() || owns(merchantId); }
+      match /preEmployment/{id}   { allow read, write: if !isAuth() || owns(merchantId); }
+      match /annualChecks/{id}    { allow read, write: if !isAuth() || owns(merchantId); }
+      match /vitals/{id}          { allow read, write: if !isAuth() || owns(merchantId); }
+      match /fieldVisits/{id}     { allow read, write: if !isAuth() || owns(merchantId); }
+      match /audits/{id}          { allow read, write: if !isAuth() || owns(merchantId); }
+      match /vaccinations/{id}    { allow read, write: if !isAuth() || owns(merchantId); }
+      match /workPermits/{id}     { allow read, write: if !isAuth() || owns(merchantId); }
+      match /healthEducation/{id} { allow read, write: if !isAuth() || owns(merchantId); }
+      match /campaigns/{id}       { allow read, write: if !isAuth() || owns(merchantId); }
+      match /waste/{id}           { allow read, write: if !isAuth() || owns(merchantId); }
+      match /biomedical/{id}      { allow read, write: if !isAuth() || owns(merchantId); }
+      match /auditLog/{id}        { allow read, write: if !isAuth() || owns(merchantId); }
+      match /settings/config      { allow read, write: if !isAuth() || owns(merchantId); }
+
+      match /users/{userId} {
+        allow read, write: if isSuperAdmin();
+        allow read:   if !isAuth() || owns(merchantId);
+        allow create: if !isAuth() || (owns(merchantId) && isAdmin());
+        allow update: if !isAuth() || owns(merchantId);
+        allow delete: if owns(merchantId) && isAdmin();
+      }
+    }
+
+    match /config/{doc=**}     { allow read, write: if isSuperAdmin(); }
+    match /superAdmin/{doc=**} { allow read, write: if isSuperAdmin(); }
+    match /activity/{doc=**}   { allow read, write: if isSuperAdmin(); }
+  }
+}
