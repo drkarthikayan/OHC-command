@@ -1,0 +1,247 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bg text-text font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  * { @apply box-border; }
+
+  /* Subtle custom scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-border rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-subtle rounded-full; }
+
+  /* Smooth focus ring */
+  :focus-visible {
+    outline: 2px solid theme('colors.sage');
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  /* Input base reset */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { opacity: 0.4; }
+}
+
+@layer components {
+
+  /* ── BUTTONS ──────────────────────────────── */
+  .btn {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold
+           transition-all duration-150 cursor-pointer border font-sans select-none;
+  }
+  .btn-primary {
+    @apply btn bg-sage text-white border-sage hover:bg-sage2 hover:border-sage2
+           shadow-sm hover:shadow-card-md active:scale-[0.98];
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-muted border-border
+           hover:bg-surface2 hover:text-text hover:border-border
+           active:scale-[0.98];
+  }
+  .btn-danger {
+    @apply btn bg-rose/10 text-rose border-rose/25
+           hover:bg-rose/20 active:scale-[0.98];
+  }
+  .btn-sm { @apply px-3 py-1.5 text-xs rounded-lg; }
+  .btn-lavender {
+    @apply btn bg-lavender/10 text-lavender border-lavender/20
+           hover:bg-lavender/20 active:scale-[0.98];
+  }
+
+  /* ── CARDS ────────────────────────────────── */
+  .card {
+    @apply bg-surface border border-border rounded-2xl shadow-card overflow-hidden;
+  }
+  .card-header {
+    @apply flex items-center gap-2.5 px-5 py-3.5 border-b border-border bg-surface2/50;
+  }
+  .card-interactive {
+    @apply card cursor-pointer hover:shadow-card-md hover:-translate-y-0.5
+           transition-all duration-200;
+  }
+
+  /* ── STAT CARDS ───────────────────────────── */
+  .stat-card {
+    @apply card p-5 relative overflow-hidden
+           hover:shadow-card-md hover:-translate-y-0.5
+           transition-all duration-200;
+  }
+  .stat-card::before {
+    content: '';
+    @apply absolute inset-x-0 top-0 h-0.5 rounded-t-2xl;
+    background: linear-gradient(90deg, theme('colors.sage'), theme('colors.accent'));
+  }
+
+  /* ── FORM FIELDS ──────────────────────────── */
+  .field-label {
+    @apply block text-xs font-semibold tracking-wide text-muted mb-1.5 uppercase;
+  }
+  .field-input {
+    @apply w-full bg-surface2 border border-border rounded-xl px-3.5 py-2.5 text-sm text-text
+           outline-none transition-all duration-150 font-sans
+           hover:border-subtle
+           focus:border-sage focus:bg-surface focus:ring-2 focus:ring-sage/10;
+  }
+  .field-input::placeholder { @apply text-subtle; }
+
+  /* ── BADGES ───────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+  .badge-green   { @apply badge bg-accent/12 text-sage2; }
+  .badge-amber   { @apply badge bg-amber/10 text-amber; }
+  .badge-red     { @apply badge bg-rose/10 text-rose; }
+  .badge-blue    { @apply badge bg-sky/10 text-sky; }
+  .badge-purple  { @apply badge bg-lavender/10 text-lavender; }
+  .badge-grey    { @apply badge bg-surface2 text-muted border border-border; }
+  .badge-active  { @apply badge-green; }
+  .badge-trial   { @apply badge-amber; }
+  .badge-suspended { @apply badge-red; }
+  .badge-pending { @apply badge-amber; }
+
+  /* ── MODALS ───────────────────────────────── */
+  .modal-backdrop {
+    @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+    background: rgba(30, 41, 59, 0.45);
+    backdrop-filter: blur(6px);
+    animation: fadeIn 0.15s ease-out;
+  }
+  .modal-box {
+    @apply bg-surface border border-border rounded-2xl shadow-modal animate-slide-up;
+  }
+  .modal-header {
+    @apply flex items-center justify-between px-6 py-4 border-b border-border;
+  }
+  .modal-body { @apply px-6 py-5; }
+  .modal-footer {
+    @apply flex justify-end gap-2 px-6 py-4 border-t border-border bg-surface2/50;
+  }
+
+  /* ── TABLES ───────────────────────────────── */
+  .table-header {
+    @apply flex items-center gap-2 px-5 py-3 bg-surface2/80 border-b border-border;
+  }
+  .table-header > * { @apply text-[10px] font-bold uppercase tracking-widest text-subtle; }
+  .table-row {
+    @apply flex items-center gap-2 px-5 py-3.5 border-b border-border/60
+           last:border-0 hover:bg-sage/5 transition-colors duration-100;
+  }
+
+  /* ── SIDEBAR ──────────────────────────────── */
+  .sidebar {
+    @apply bg-surface border-r border-border flex flex-col h-full;
+  }
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted
+           hover:bg-sage/8 hover:text-text transition-all duration-150 mx-2 cursor-pointer;
+  }
+  .nav-item.active {
+    @apply bg-sage/12 text-sage2 font-semibold;
+  }
+  .nav-item-icon {
+    @apply w-7 h-7 rounded-lg flex items-center justify-center text-base shrink-0;
+  }
+  .nav-item.active .nav-item-icon { @apply bg-sage/15; }
+
+  /* ── PAGE HEADER ──────────────────────────── */
+  .page-header {
+    @apply flex items-center justify-between mb-7;
+  }
+  .page-title {
+    @apply font-serif text-3xl font-semibold text-text;
+  }
+  .page-subtitle {
+    @apply text-sm text-muted mt-1;
+  }
+
+  /* ── SECTION LABEL ────────────────────────── */
+  .section-label {
+    @apply text-[10px] font-bold uppercase tracking-widest text-subtle;
+  }
+
+  /* ── ALERT BANNERS ────────────────────────── */
+  .alert {
+    @apply flex items-start gap-3 px-4 py-3 rounded-xl border text-sm;
+  }
+  .alert-info    { @apply alert bg-sky/8 border-sky/20 text-sky; }
+  .alert-success { @apply alert bg-accent/8 border-accent/20 text-sage2; }
+  .alert-warning { @apply alert bg-amber/8 border-amber/20 text-amber; }
+  .alert-danger  { @apply alert bg-rose/8 border-rose/20 text-rose; }
+
+  /* ── CHIPS / PILLS ────────────────────────── */
+  .chip {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs
+           font-medium border transition-colors duration-150 cursor-pointer select-none;
+  }
+  .chip-active   { @apply bg-sage text-white border-sage; }
+  .chip-inactive { @apply bg-surface2 text-muted border-border hover:border-sage hover:text-sage2; }
+
+  /* ── SEARCH INPUT ─────────────────────────── */
+  .search-input {
+    @apply field-input pl-9;
+  }
+
+  /* ── EMPTY STATE ──────────────────────────── */
+  .empty-state {
+    @apply py-16 flex flex-col items-center justify-center text-center;
+  }
+  .empty-state-icon { @apply text-5xl mb-4 opacity-60; }
+  .empty-state-text { @apply text-muted text-sm; }
+
+  /* ── DIVIDER ──────────────────────────────── */
+  .divider { @apply border-t border-border; }
+
+  /* ── TOOLTIP ──────────────────────────────── */
+  .tooltip-trigger { @apply relative; }
+  .tooltip-trigger:hover .tooltip-content { @apply opacity-100 visible translate-y-0; }
+  .tooltip-content {
+    @apply absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-1.5
+           px-2.5 py-1.5 bg-text text-surface text-xs font-medium rounded-lg
+           opacity-0 invisible translate-y-1 transition-all duration-150 whitespace-nowrap
+           pointer-events-none shadow-card-md;
+  }
+
+  /* ── AVATAR ───────────────────────────────── */
+  .avatar {
+    @apply rounded-full flex items-center justify-center font-bold shrink-0 select-none;
+  }
+  .avatar-sm  { @apply avatar w-7 h-7 text-xs; }
+  .avatar-md  { @apply avatar w-9 h-9 text-sm; }
+  .avatar-lg  { @apply avatar w-12 h-12 text-base; }
+
+  /* ── PROGRESS BAR ─────────────────────────── */
+  .progress-bar {
+    @apply h-1.5 rounded-full bg-border overflow-hidden;
+  }
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-500;
+  }
+}
+
+/* ── CUSTOM UTILITIES ─────────────────────────── */
+@layer utilities {
+  .text-gradient-sage {
+    background: linear-gradient(135deg, theme('colors.sage'), theme('colors.accent'));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .bg-mesh {
+    background-image:
+      radial-gradient(at 30% 20%, rgba(107,158,143,0.08) 0, transparent 50%),
+      radial-gradient(at 80% 80%, rgba(124,111,205,0.06) 0, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(82,183,136,0.04) 0, transparent 70%);
+  }
+  .ring-sage { @apply ring-2 ring-sage/30; }
+}
+
+/* ── TRANSITION DEFAULTS ──────────────────────── */
+button, a, input, select, textarea { transition-property: all; transition-timing-function: cubic-bezier(0.4,0,0.2,1); transition-duration: 150ms; }

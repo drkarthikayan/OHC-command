@@ -16,34 +16,92 @@ import HealthTrackerPage from './HealthTracker';
 import BiomedicalWastePage from './BiomedicalWaste';
 import MedicalCampaignsPage from './MedicalCampaigns';
 
-// Role-based nav: what each role can see
-const NAV_ITEMS = [
-  { id: 'dashboard',    label: 'Dashboard',    icon: '📊', path: 'dashboard',    roles: ['doctor','nurse','pharmacy','admin','staff'] },
-  { id: 'employees',    label: 'Employees',    icon: '👤', path: 'employees',    roles: ['doctor','nurse','admin','staff'] },
-  { id: 'opd',          label: 'OPD / Visits', icon: '📋', path: 'opd',          roles: ['doctor','nurse','admin'] },
-  { id: 'pharmacy',     label: 'Pharmacy',     icon: '💊', path: 'pharmacy',     roles: ['pharmacy','doctor','admin'] },
-  { id: 'certificates',   label: 'Certificates',     icon: '📜', path: 'certificates',   roles: ['doctor','admin'] },
-  { id: 'pre-employment', label: 'Pre-Employment',  icon: '📋', path: 'pre-employment', roles: ['doctor','nurse','admin'] },
-  { id: 'injuries',       label: 'Injury Register', icon: '🩹', path: 'injuries',       roles: ['doctor','nurse','admin'] },
-  { id: 'periodic-exam',   label: 'Periodic Exam',    icon: '🔬', path: 'periodic-exam',   roles: ['doctor','nurse','admin'] },
-  { id: 'hospital',        label: 'Hospital Tracker', icon: '🏥', path: 'hospital',        roles: ['doctor','nurse','admin'] },
-  { id: 'health-tracker',   label: 'Health Tracker',    icon: '💚', path: 'health-tracker',   roles: ['doctor','nurse','admin'] },
-  { id: 'campaigns',        label: 'Campaigns',         icon: '🏥', path: 'campaigns',        roles: ['doctor','nurse','admin'] },
-  { id: 'biomedical-waste', label: 'Biomedical Waste',  icon: '♻️', path: 'biomedical-waste', roles: ['doctor','nurse','admin'] },
+const NAV_GROUPS = [
+  {
+    label: 'Main',
+    items: [
+      { id: 'dashboard',    label: 'Dashboard',        icon: '◼', path: 'dashboard',    roles: ['doctor','nurse','pharmacy','admin','staff'] },
+      { id: 'employees',    label: 'Employees',        icon: '◼', path: 'employees',    roles: ['doctor','nurse','admin','staff'] },
+    ],
+  },
+  {
+    label: 'Clinical',
+    items: [
+      { id: 'opd',            label: 'OPD / Visits',    icon: '◼', path: 'opd',            roles: ['doctor','nurse','admin'] },
+      { id: 'pre-employment', label: 'Pre-Employment',  icon: '◼', path: 'pre-employment', roles: ['doctor','nurse','admin'] },
+      { id: 'periodic-exam',  label: 'Periodic Exam',   icon: '◼', path: 'periodic-exam',  roles: ['doctor','nurse','admin'] },
+      { id: 'certificates',   label: 'Certificates',    icon: '◼', path: 'certificates',   roles: ['doctor','admin'] },
+    ],
+  },
+  {
+    label: 'Health',
+    items: [
+      { id: 'hospital',       label: 'Hospital Tracker', icon: '◼', path: 'hospital',       roles: ['doctor','nurse','admin'] },
+      { id: 'health-tracker', label: 'Health Tracker',   icon: '◼', path: 'health-tracker', roles: ['doctor','nurse','admin'] },
+      { id: 'injuries',       label: 'Injury Register',  icon: '◼', path: 'injuries',       roles: ['doctor','nurse','admin'] },
+    ],
+  },
+  {
+    label: 'Operations',
+    items: [
+      { id: 'pharmacy',        label: 'Pharmacy',         icon: '◼', path: 'pharmacy',        roles: ['pharmacy','doctor','admin'] },
+      { id: 'campaigns',       label: 'Campaigns',        icon: '◼', path: 'campaigns',       roles: ['doctor','nurse','admin'] },
+      { id: 'biomedical-waste',label: 'Biomedical Waste', icon: '◼', path: 'biomedical-waste',roles: ['doctor','nurse','admin'] },
+    ],
+  },
 ];
 
-function RoleBadge({ role }) {
-  const colors = {
-    doctor:   'bg-blue-500/15 text-blue-400',
-    nurse:    'bg-pink-500/15 text-pink-400',
-    pharmacy: 'bg-amber-500/15 text-amber-400',
-    admin:    'bg-purple-500/15 text-purple-400',
-    staff:    'bg-gray-500/15 text-gray-400',
-  };
+// Nav icon map (SVG-based — no emoji)
+const NAV_ICONS = {
+  dashboard:       <IconGrid />,
+  employees:       <IconUsers />,
+  opd:             <IconClipboard />,
+  'pre-employment':<IconSearch />,
+  'periodic-exam': <IconFlask />,
+  certificates:    <IconAward />,
+  hospital:        <IconHospital />,
+  'health-tracker':<IconHeart />,
+  injuries:        <IconAlert />,
+  pharmacy:        <IconPill />,
+  campaigns:       <IconBullhorn />,
+  'biomedical-waste': <IconRecycle />,
+};
+
+function IconGrid()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>; }
+function IconUsers()    { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><circle cx="6" cy="5" r="2.5"/><path d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5"/><circle cx="12" cy="5" r="2"/><path d="M11 11.5c.9-.31 2.1-.5 3-.5"/></svg>; }
+function IconClipboard(){ return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M5 2a1 1 0 011-1h4a1 1 0 011 1v1H5V2zM3 3h10a1 1 0 011 1v9a1 1 0 01-1 1H3a1 1 0 01-1-1V4a1 1 0 011-1zm2 4h6v1H5V7zm0 2h4v1H5V9z"/></svg>; }
+function IconSearch()   { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path fillRule="evenodd" d="M6.5 11a4.5 4.5 0 100-9 4.5 4.5 0 000 9zm3.09-1.32l2.73 2.73-1.06 1.06-2.73-2.73A5.5 5.5 0 116.5 12a5.47 5.47 0 01-3.09-.96l-.23.22H4v-1.5L6.09 9.3A4.47 4.47 0 006.5 11z"/></svg>; }
+function IconFlask()    { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M5 1v6L2 12a2 2 0 001.8 2.9h8.4A2 2 0 0014 12L11 7V1H5zm2 1h2v5.5l2.5 4H4.5L7 7.5V2z"/></svg>; }
+function IconAward()    { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><circle cx="8" cy="6" r="4"/><path d="M5.5 10l-1.5 5 4-2.5 4 2.5-1.5-5"/></svg>; }
+function IconHospital() { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path fillRule="evenodd" d="M1 2a1 1 0 011-1h12a1 1 0 011 1v13H1V2zm7 2H7v2H5v1h2v2h1V7h2V6H8V4zm-4 8h2v2H4v-2zm6 0h2v2h-2v-2z" clipRule="evenodd"/></svg>; }
+function IconHeart()    { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 13.5C5.5 11.5 2 9 2 5.5A3.5 3.5 0 018 3.72 3.5 3.5 0 0114 5.5C14 9 10.5 11.5 8 13.5z"/></svg>; }
+function IconAlert()    { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 1L1 14h14L8 1zm0 3l4.5 8h-9L8 4zm-.5 2v3h1V6h-1zm0 4v1h1v-1h-1z"/></svg>; }
+function IconPill()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M10.5 1.5a4.5 4.5 0 013.18 7.68l-5 5A4.5 4.5 0 012.32 7.82l5-5A4.48 4.48 0 0110.5 1.5zM8 5.5L4.5 9a2.5 2.5 0 003.18 3.18L11 8.82 8 5.5z"/></svg>; }
+function IconBullhorn() { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M13 2v9l-2-1.5V3.5L13 2zM2 5h7v5H2L1 8.5 2 5zm1.5 7l1-2.5H6l-1 2.5H3.5z"/></svg>; }
+function IconRecycle()  { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 2L6 5h1.5v2H5a1 1 0 00-.87.5L2 11.5h2.5L3 14h4l1-2.5H6.5v-2h3v2H8l1 2.5h4l-1.5-2.5H14l-2.13-4A1 1 0 0011 7H8.5V5H10L8 2z"/></svg>; }
+function IconMenu()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="1" y="3" width="14" height="1.5" rx="0.75"/><rect x="1" y="7.25" width="14" height="1.5" rx="0.75"/><rect x="1" y="11.5" width="14" height="1.5" rx="0.75"/></svg>; }
+function IconChevron()  { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5"><path d="M5 3l6 5-6 5"/></svg>; }
+function IconLogout()   { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M6 8h7"/></svg>; }
+
+const ROLE_COLORS = {
+  doctor:   { bg: 'bg-sky/10',     text: 'text-sky',      dot: '#3b82f6' },
+  nurse:    { bg: 'bg-rose/10',    text: 'text-rose',     dot: '#e07a8f' },
+  pharmacy: { bg: 'bg-amber/10',   text: 'text-amber',    dot: '#d97706' },
+  admin:    { bg: 'bg-lavender/10',text: 'text-lavender', dot: '#7c6fcd' },
+  staff:    { bg: 'bg-subtle/10',  text: 'text-muted',    dot: '#94a3b8' },
+};
+
+function Forbidden() {
   return (
-    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider ${colors[role] || colors.staff}`}>
-      {roleIcon[role] || '👤'} {role}
-    </span>
+    <div className="flex flex-col items-center justify-center h-64 text-center p-8">
+      <div className="w-14 h-14 rounded-2xl bg-rose/10 flex items-center justify-center mb-4">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7 text-rose">
+          <circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+        </svg>
+      </div>
+      <div className="font-semibold text-text mb-1">Access Restricted</div>
+      <p className="text-sm text-muted">You don't have permission to view this page.</p>
+    </div>
   );
 }
 
@@ -52,6 +110,7 @@ export default function StaffLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileOpen,  setMobileOpen]  = useState(false);
 
   useEffect(() => {
     if (!staffUser) navigate('/', { replace: true });
@@ -59,117 +118,165 @@ export default function StaffLayout() {
 
   if (!staffUser || !tenant) return null;
 
-  const role = staffUser.role || 'staff';
-  const navItems = NAV_ITEMS.filter(n => n.roles.includes(role));
+  const role     = staffUser.role || 'staff';
+  const roleConf = ROLE_COLORS[role] || ROLE_COLORS.staff;
 
-  const handleLogout = () => {
-    clearAll();
-    navigate('/', { replace: true });
-  };
+  // All nav items this role can see
+  const allItems = NAV_GROUPS.flatMap(g => g.items).filter(i => i.roles.includes(role));
 
-  const activePath = location.pathname.split('/portal/')[1];
+  const currentPath = location.pathname.split('/').pop();
+  const activeItem  = allItems.find(i => i.path === currentPath) || allItems[0];
 
-  return (
-    <div className="flex min-h-screen bg-bg">
-      {/* Sidebar */}
-      <aside className={`${sidebarOpen ? 'w-56' : 'w-14'} min-h-screen bg-surface border-r border-border flex flex-col transition-all duration-200 shrink-0`}>
-        {/* Logo */}
-        <div className="flex items-center gap-2.5 px-4 py-4 border-b border-border">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-green to-green2 flex items-center justify-center text-xs font-bold text-white shrink-0">⚕</div>
+  const handleLogout = () => { clearAll(); navigate('/', { replace: true }); };
+
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full">
+      {/* Logo */}
+      <div className="px-5 py-5 border-b border-border">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+            style={{ background: 'linear-gradient(135deg, #6b9e8f 0%, #52b788 100%)' }}>
+            <svg viewBox="0 0 20 20" fill="white" className="w-5 h-5">
+              <path d="M10 2a1 1 0 011 1v4h4a1 1 0 110 2h-4v4a1 1 0 11-2 0v-4H5a1 1 0 110-2h4V3a1 1 0 011-1z"/>
+            </svg>
+          </div>
           {sidebarOpen && (
             <div className="min-w-0">
-              <div className="text-xs font-bold text-text truncate">{tenant.name}</div>
-              <div className="text-[10px] text-muted">OHC Portal</div>
+              <div className="font-serif text-base font-semibold text-text leading-tight">OHC Command</div>
+              <div className="text-[11px] text-muted truncate">{tenant?.name}</div>
             </div>
           )}
         </div>
+      </div>
 
-        {/* Nav */}
-        <nav className="flex-1 py-2">
-          {navItems.map(item => {
-            const active = activePath === item.path || (!activePath && item.id === 'dashboard');
-            return (
-              <Link
-                key={item.id}
-                to={`/portal/${item.path}`}
-                className={`flex items-center gap-2.5 px-4 py-2.5 text-sm transition-all border-l-2 ${
-                  active
-                    ? 'border-accent text-accent bg-surface2'
-                    : 'border-transparent text-muted hover:text-text hover:bg-surface2/60'
-                }`}
-              >
-                <span className="text-base w-5 text-center shrink-0">{item.icon}</span>
-                {sidebarOpen && <span className="truncate">{item.label}</span>}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* User info + logout */}
-        <div className="border-t border-border p-3">
-          {sidebarOpen ? (
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green/30 to-green2/30 flex items-center justify-center text-xs font-bold text-accent shrink-0">
-                {(staffUser.name || 'U')[0].toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-xs font-medium text-text truncate">{staffUser.name}</div>
-                <div className="text-[10px] text-muted truncate">{staffUser.staffId}</div>
-              </div>
-              <button onClick={handleLogout} className="text-muted hover:text-red-400 transition-colors text-sm" title="Logout">⏏</button>
+      {/* Nav */}
+      <nav className="flex-1 overflow-y-auto py-3 space-y-0.5">
+        {NAV_GROUPS.map(group => {
+          const visibleItems = group.items.filter(i => i.roles.includes(role));
+          if (!visibleItems.length) return null;
+          return (
+            <div key={group.label} className="mb-1">
+              {sidebarOpen && (
+                <div className="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-subtle">
+                  {group.label}
+                </div>
+              )}
+              {visibleItems.map(item => {
+                const isActive = currentPath === item.path || (currentPath === 'portal' && item.path === 'dashboard');
+                return (
+                  <Link key={item.id} to={item.path}
+                    onClick={() => setMobileOpen(false)}
+                    className={`nav-item ${isActive ? 'active' : ''} ${!sidebarOpen ? 'justify-center px-0 mx-auto w-11 h-11' : ''}`}>
+                    <div className={`nav-item-icon ${isActive ? '' : 'opacity-60'}`}>
+                      {NAV_ICONS[item.id]}
+                    </div>
+                    {sidebarOpen && <span className="truncate">{item.label}</span>}
+                    {sidebarOpen && isActive && (
+                      <div className="ml-auto w-1.5 h-1.5 rounded-full bg-sage shrink-0" />
+                    )}
+                  </Link>
+                );
+              })}
             </div>
-          ) : (
-            <button onClick={handleLogout} className="w-full flex justify-center text-muted hover:text-red-400 transition-colors text-sm" title="Logout">⏏</button>
+          );
+        })}
+      </nav>
+
+      {/* User footer */}
+      <div className="border-t border-border p-3">
+        <div className={`flex items-center gap-2.5 px-2 py-2 rounded-xl ${sidebarOpen ? '' : 'justify-center'}`}>
+          <div className={`avatar avatar-sm font-bold shrink-0 ${roleConf.bg} ${roleConf.text}`}>
+            {(staffUser.name?.[0] || 'U').toUpperCase()}
+          </div>
+          {sidebarOpen && (
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold text-text truncate">{staffUser.name}</div>
+              <div className={`text-[10px] font-semibold uppercase tracking-wide ${roleConf.text}`}>{role}</div>
+            </div>
+          )}
+          {sidebarOpen && (
+            <button onClick={handleLogout}
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-muted hover:bg-rose/10 hover:text-rose transition-colors shrink-0"
+              title="Log out">
+              <IconLogout />
+            </button>
           )}
         </div>
-      </aside>
-
-      {/* Main */}
-      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
-        {/* Topbar */}
-        <header className="h-12 bg-surface border-b border-border flex items-center px-4 gap-3 shrink-0">
-          <button
-            onClick={() => setSidebarOpen(o => !o)}
-            className="text-muted hover:text-text transition-colors text-lg"
-          >☰</button>
-          <div className="flex-1" />
-          <RoleBadge role={role} />
-          <div className="text-xs text-muted hidden sm:block">{staffUser.name}</div>
-          <button
-            onClick={handleLogout}
-            className="text-xs text-muted hover:text-red-400 transition-colors px-2 py-1 rounded border border-border hover:border-red-400/30"
-          >Sign out</button>
-        </header>
-
-        {/* Content */}
-        <main className="flex-1 overflow-y-auto">
-          <Routes>
-            <Route path="dashboard"    element={<StaffDashboard />} />
-            <Route path="employees"    element={navItems.find(n=>n.id==='employees')    ? <EmployeesPage />    : <Forbidden />} />
-            <Route path="opd"          element={navItems.find(n=>n.id==='opd')          ? <OpdPage />          : <Forbidden />} />
-            <Route path="pharmacy"     element={navItems.find(n=>n.id==='pharmacy')     ? <PharmacyPage />     : <Forbidden />} />
-            <Route path="certificates"    element={navItems.find(n=>n.id==='certificates')    ? <CertificatesPage />    : <Forbidden />} />
-            <Route path="pre-employment" element={navItems.find(n=>n.id==='pre-employment') ? <PreEmploymentPage /> : <Forbidden />} />
-            <Route path="injuries"      element={navItems.find(n=>n.id==='injuries')      ? <InjuryRegisterPage />  : <Forbidden />} />
-            <Route path="periodic-exam"  element={navItems.find(n=>n.id==='periodic-exam')  ? <PeriodicExamPage />    : <Forbidden />} />
-            <Route path="hospital"       element={navItems.find(n=>n.id==='hospital')       ? <HospitalTrackerPage /> : <Forbidden />} />
-            <Route path="health-tracker"   element={navItems.find(n=>n.id==='health-tracker')   ? <HealthTrackerPage />    : <Forbidden />} />
-            <Route path="campaigns"       element={navItems.find(n=>n.id==='campaigns')       ? <MedicalCampaignsPage /> : <Forbidden />} />
-            <Route path="biomedical-waste" element={navItems.find(n=>n.id==='biomedical-waste') ? <BiomedicalWastePage />  : <Forbidden />} />
-            <Route path="*"            element={<Navigate to="dashboard" replace />} />
-          </Routes>
-        </main>
       </div>
     </div>
   );
-}
 
-function Forbidden() {
   return (
-    <div className="p-8 text-center">
-      <div className="text-4xl mb-3">🔒</div>
-      <div className="text-text font-serif text-xl mb-1">Access Restricted</div>
-      <div className="text-muted text-sm">Your role doesn't have permission to view this page.</div>
+    <div className="flex h-screen bg-bg overflow-hidden">
+
+      {/* Desktop Sidebar */}
+      <aside className={`hidden md:flex flex-col shrink-0 transition-all duration-300 sidebar
+        ${sidebarOpen ? 'w-60' : 'w-16'}`}>
+        <SidebarContent />
+      </aside>
+
+      {/* Mobile overlay sidebar */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="absolute inset-0 bg-text/30 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+          <aside className="absolute left-0 top-0 bottom-0 w-64 sidebar shadow-card-lg animate-slide-in-left">
+            <SidebarContent />
+          </aside>
+        </div>
+      )}
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+
+        {/* Top bar */}
+        <header className="h-14 bg-surface border-b border-border flex items-center gap-3 px-4 shrink-0 shadow-card">
+          {/* Sidebar toggle */}
+          <button onClick={() => { setSidebarOpen(s => !s); setMobileOpen(m => !m); }}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-muted hover:bg-surface2 hover:text-text transition-colors">
+            <IconMenu />
+          </button>
+
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-1.5 text-sm min-w-0">
+            <span className="text-subtle font-medium hidden sm:block">Portal</span>
+            <span className="text-border hidden sm:block"><IconChevron /></span>
+            <span className="font-semibold text-text truncate">{activeItem?.label || 'Dashboard'}</span>
+          </div>
+
+          {/* Right side */}
+          <div className="ml-auto flex items-center gap-2">
+            {/* Role pill */}
+            <div className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold ${roleConf.bg} ${roleConf.text}`}>
+              <div className="w-1.5 h-1.5 rounded-full" style={{ background: roleConf.dot }} />
+              {staffUser.name?.split(' ')[0]}
+            </div>
+            {/* Logout button (mobile) */}
+            <button onClick={handleLogout}
+              className="md:hidden w-8 h-8 rounded-lg flex items-center justify-center text-muted hover:bg-rose/10 hover:text-rose transition-colors">
+              <IconLogout />
+            </button>
+          </div>
+        </header>
+
+        {/* Page content */}
+        <main className="flex-1 overflow-y-auto bg-mesh">
+          <Routes>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard"      element={<StaffDashboard />} />
+            <Route path="employees"      element={allItems.find(n=>n.id==='employees')      ? <EmployeesPage />       : <Forbidden />} />
+            <Route path="opd"            element={allItems.find(n=>n.id==='opd')            ? <OpdPage />             : <Forbidden />} />
+            <Route path="pharmacy"       element={allItems.find(n=>n.id==='pharmacy')       ? <PharmacyPage />        : <Forbidden />} />
+            <Route path="certificates"   element={allItems.find(n=>n.id==='certificates')   ? <CertificatesPage />    : <Forbidden />} />
+            <Route path="pre-employment" element={allItems.find(n=>n.id==='pre-employment') ? <PreEmploymentPage />   : <Forbidden />} />
+            <Route path="injuries"       element={allItems.find(n=>n.id==='injuries')       ? <InjuryRegisterPage />  : <Forbidden />} />
+            <Route path="periodic-exam"  element={allItems.find(n=>n.id==='periodic-exam')  ? <PeriodicExamPage />    : <Forbidden />} />
+            <Route path="hospital"       element={allItems.find(n=>n.id==='hospital')       ? <HospitalTrackerPage /> : <Forbidden />} />
+            <Route path="health-tracker" element={allItems.find(n=>n.id==='health-tracker') ? <HealthTrackerPage />   : <Forbidden />} />
+            <Route path="campaigns"      element={allItems.find(n=>n.id==='campaigns')      ? <MedicalCampaignsPage />: <Forbidden />} />
+            <Route path="biomedical-waste" element={allItems.find(n=>n.id==='biomedical-waste') ? <BiomedicalWastePage /> : <Forbidden />} />
+          </Routes>
+        </main>
+      </div>
     </div>
   );
 }
