@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy, getDocs } from 'firebase/firestore';
@@ -72,14 +73,14 @@ export default function CertificatesPage() {
       } else {
         await addDoc(collection(db, 'merchants', tid, 'certificates'), { ...form, createdAt: serverTimestamp() });
       }
-      setShowModal(false);
+      toast.success(editing ? 'Certificate updated.' : 'Certificate issued.'); setShowModal(false);
     } catch (e) { setError(e.message); }
     finally { setSaving(false); }
   };
 
   const handleDelete = async (c) => {
-    if (!window.confirm(`Delete certificate ${c.certNo}?`)) return;
-    await deleteDoc(doc(db, 'merchants', tid, 'certificates', c.id));
+    const ok = await new Promise(r => { r(window.confirm(`Delete certificate ${c.certNo}?`)); }); if (!ok) return;
+    await deleteDoc(doc(db, 'merchants', tid, 'certificates', c.id)); toast.success('Certificate deleted.');
   };
 
   const handlePrint = (cert) => {

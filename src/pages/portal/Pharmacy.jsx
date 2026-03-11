@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from 'firebase/firestore';
@@ -55,7 +56,7 @@ export default function PharmacyPage() {
       } else {
         await addDoc(collection(db, 'merchants', tid, 'pharmacy'), { ...payload, createdAt: serverTimestamp() });
       }
-      setShowModal(false);
+      toast.success(editing ? 'Item updated.' : 'Added to inventory.'); setShowModal(false);
     } catch (e) { setError(e.message); }
     finally { setSaving(false); }
   };
@@ -63,21 +64,21 @@ export default function PharmacyPage() {
   const handleDispense = async () => {
     const qty = parseInt(dispenseQty) || 0;
     if (qty <= 0) { return; }
-    if (qty > dispensing.quantity) { alert('Insufficient stock.'); return; }
+    if (qty > dispensing.quantity) { toast.error('Insufficient stock.'); return; return; }
     setSaving(true);
     try {
       await updateDoc(doc(db, 'merchants', tid, 'pharmacy', dispensing.id), {
         quantity: dispensing.quantity - qty,
         updatedAt: serverTimestamp(),
       });
-      setShowDispense(false);
+      toast.success('Dispensed successfully.'); setShowDispense(false);
     } catch (e) { console.error(e); }
     finally { setSaving(false); }
   };
 
   const handleDelete = async (item) => {
-    if (!window.confirm(`Remove ${item.name} from inventory?`)) return;
-    await deleteDoc(doc(db, 'merchants', tid, 'pharmacy', item.id));
+    const ok = await new Promise(r => { r(window.confirm(`Remove ${item.name} from inventory?`)); }); if (!ok) return;
+    await deleteDoc(doc(db, 'merchants', tid, 'pharmacy', item.id)); toast.success('Item removed.');
   };
 
   const isExpired = (exp) => exp && new Date(exp) < new Date();

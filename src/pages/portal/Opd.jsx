@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import {
@@ -83,14 +84,14 @@ export default function OpdPage() {
       } else {
         await addDoc(collection(db, 'merchants', tid, 'opd'), { ...payload, createdAt: serverTimestamp() });
       }
-      setShowModal(false);
+      toast.success(editing ? 'Visit updated.' : 'Visit saved.'); setShowModal(false);
     } catch (e) { setError(e.message); }
     finally { setSaving(false); }
   };
 
   const handleDelete = async (v) => {
-    if (!window.confirm(`Delete this visit record for ${v.employeeName}?`)) return;
-    await deleteDoc(doc(db, 'merchants', tid, 'opd', v.id));
+    const ok = await new Promise(r => { r(window.confirm(`Delete this visit record for ${v.employeeName}?`)); }); if (!ok) return;
+    await deleteDoc(doc(db, 'merchants', tid, 'opd', v.id)); toast.success('Visit deleted.');
   };
 
   const filtered = visits.filter(v => {
