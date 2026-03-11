@@ -15,6 +15,12 @@ import HospitalTrackerPage from './HospitalTracker';
 import HealthTrackerPage from './HealthTracker';
 import BiomedicalWastePage from './BiomedicalWaste';
 import MedicalCampaignsPage from './MedicalCampaigns';
+import FieldRoundsPage from './FieldRounds';
+import AuditsPage from './Audits';
+import VaccinationRegisterPage from './VaccinationRegister';
+import WorkPermitsPage from './WorkPermits';
+import HealthEducationPage from './HealthEducation';
+import DispensaryLogPage from './DispensaryLog';
 
 const NAV_GROUPS = [
   {
@@ -42,11 +48,22 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: 'Operations',
+    label: 'Field Activities',
     items: [
-      { id: 'pharmacy',        label: 'Pharmacy',         icon: '◼', path: 'pharmacy',        roles: ['pharmacy','doctor','admin'] },
-      { id: 'campaigns',       label: 'Campaigns',        icon: '◼', path: 'campaigns',       roles: ['doctor','nurse','admin'] },
-      { id: 'biomedical-waste',label: 'Biomedical Waste', icon: '◼', path: 'biomedical-waste',roles: ['doctor','nurse','admin'] },
+      { id: 'field-rounds',        label: 'Field Rounds',        icon: '◼', path: 'field-rounds',        roles: ['doctor','nurse','admin'] },
+      { id: 'audits',              label: 'Audits',              icon: '◼', path: 'audits',              roles: ['doctor','nurse','admin'] },
+      { id: 'vaccination',         label: 'Vaccination Register',icon: '◼', path: 'vaccination',         roles: ['doctor','nurse','admin'] },
+      { id: 'work-permits',        label: 'Work Permits',        icon: '◼', path: 'work-permits',        roles: ['doctor','nurse','admin'] },
+      { id: 'health-education',    label: 'Health Education',    icon: '◼', path: 'health-education',    roles: ['doctor','nurse','admin'] },
+    ],
+  },
+  {
+    label: 'Pharmacy',
+    items: [
+      { id: 'pharmacy',         label: 'Stock Management',   icon: '◼', path: 'pharmacy',         roles: ['pharmacy','doctor','admin'] },
+      { id: 'dispensary-log',   label: 'Dispensary Log',     icon: '◼', path: 'dispensary-log',   roles: ['doctor','nurse','admin'] },
+      { id: 'campaigns',        label: 'Medical Campaigns',  icon: '◼', path: 'campaigns',        roles: ['doctor','nurse','admin'] },
+      { id: 'biomedical-waste', label: 'Biomedical Waste',   icon: '◼', path: 'biomedical-waste', roles: ['doctor','nurse','admin'] },
     ],
   },
 ];
@@ -65,6 +82,12 @@ const NAV_ICONS = {
   pharmacy:        <IconPill />,
   campaigns:       <IconBullhorn />,
   'biomedical-waste': <IconRecycle />,
+  'field-rounds':     <IconCompass />,
+  'audits':           <IconCheckSquare />,
+  'vaccination':      <IconSyringe />,
+  'work-permits':     <IconShield />,
+  'health-education': <IconGradCap />,
+  'dispensary-log':   <IconReceipt />,
 };
 
 function IconGrid()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>; }
@@ -82,6 +105,12 @@ function IconRecycle()  { return <svg viewBox="0 0 16 16" fill="currentColor" cl
 function IconMenu()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="1" y="3" width="14" height="1.5" rx="0.75"/><rect x="1" y="7.25" width="14" height="1.5" rx="0.75"/><rect x="1" y="11.5" width="14" height="1.5" rx="0.75"/></svg>; }
 function IconChevron()  { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5"><path d="M5 3l6 5-6 5"/></svg>; }
 function IconLogout()   { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M6 8h7"/></svg>; }
+function IconCompass()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><circle cx="8" cy="8" r="6" fillOpacity=".15"/><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M10 6l-1.5 3.5L5 10l1.5-3.5L10 6z"/></svg>; }
+function IconCheckSquare() { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="2" y="2" width="12" height="12" rx="2" fillOpacity=".15"/><rect x="2" y="2" width="12" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5 8l2 2 4-3.5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>; }
+function IconSyringe()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M11.5 1.5l3 3-1 1-1-1-5 5 .5 1.5-1.5.5L7 11 4 14l-1-1 3-3-.5-.5 1-1.5 1.5.5 5-5-1-1 1-1z"/></svg>; }
+function IconShield()      { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 1L2 3.5V8c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V3.5L8 1z" fillOpacity=".15"/><path d="M8 1L2 3.5V8c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V3.5L8 1z" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5.5 8l2 2 3-3" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>; }
+function IconGradCap()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 3L1 6.5l7 3.5 7-3.5L8 3z"/><path d="M4 8.5V12c0 1 1.8 2 4 2s4-1 4-2V8.5" fillOpacity=".3"/><path d="M13 6.5v3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>; }
+function IconReceipt()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M3 1h10a1 1 0 011 1v12l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5V2a1 1 0 011-1z" fillOpacity=".15"/><path d="M3 1h10a1 1 0 011 1v12l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5V2a1 1 0 011-1z" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5 5h6M5 8h6M5 11h4" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>; }
 
 const ROLE_COLORS = {
   doctor:   { bg: 'bg-sky/10',     text: 'text-sky',      dot: '#3b82f6' },
@@ -274,6 +303,12 @@ export default function StaffLayout() {
             <Route path="health-tracker" element={allItems.find(n=>n.id==='health-tracker') ? <HealthTrackerPage />   : <Forbidden />} />
             <Route path="campaigns"      element={allItems.find(n=>n.id==='campaigns')      ? <MedicalCampaignsPage />: <Forbidden />} />
             <Route path="biomedical-waste" element={allItems.find(n=>n.id==='biomedical-waste') ? <BiomedicalWastePage /> : <Forbidden />} />
+            <Route path="field-rounds"   element={allItems.find(n=>n.id==='field-rounds')   ? <FieldRoundsPage />     : <Forbidden />} />
+            <Route path="audits"         element={allItems.find(n=>n.id==='audits')         ? <AuditsPage />          : <Forbidden />} />
+            <Route path="vaccination"    element={allItems.find(n=>n.id==='vaccination')    ? <VaccinationRegisterPage />: <Forbidden />} />
+            <Route path="work-permits"   element={allItems.find(n=>n.id==='work-permits')   ? <WorkPermitsPage />     : <Forbidden />} />
+            <Route path="health-education" element={allItems.find(n=>n.id==='health-education') ? <HealthEducationPage />: <Forbidden />} />
+            <Route path="dispensary-log" element={allItems.find(n=>n.id==='dispensary-log') ? <DispensaryLogPage />   : <Forbidden />} />
           </Routes>
         </main>
       </div>
