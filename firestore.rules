@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuth()       { return request.auth != null; }
+    function isSuperAdmin() { return isAuth() && request.auth.token.role == 'super_admin'; }
+    function isAdmin()      { return isAuth() && request.auth.token.role in ['ohc_admin','super_admin']; }
+    function owns(mid)      { return isAuth() && request.auth.token.merchantId == mid; }
+
+    // Super admin — full access everywhere
+    match /{document=**} {
+      allow read, write: if isSuperAdmin();
+    }
+
+    // Merchants list — anyone can read (for login dropdown)
+    match /merchants/{merchantId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+
+      // All subcollections — open read/write for unauthenticated staff
+      // (staff use Firestore-based auth, not Firebase Auth)
+      // Role enforcement is done client-side via Zustand session
+
+      match /employees/{id}        { allow read, write: if true; }
+      match /opd/{id}              { allow read, write: if true; }
+      match /pharmacy/{id}         { allow read, write: if true; }
+      match /dispensaryLog/{id}    { allow read, write: if true; }
+      match /dispensary/{id}       { allow read, write: if true; }
+      match /injuries/{id}         { allow read, write: if true; }
+      match /certificates/{id}     { allow read, write: if true; }
+      match /hospitalTracker/{id}  { allow read, write: if true; }
+      match /healthConditions/{id} { allow read, write: if true; }
+      match /preEmployment/{id}    { allow read, write: if true; }
+      match /periodicExams/{id}    { allow read, write: if true; }
+      match /annualChecks/{id}     { allow read, write: if true; }
+      match /vitals/{id}           { allow read, write: if true; }
+      match /fieldRounds/{id}      { allow read, write: if true; }
+      match /fieldVisits/{id}      { allow read, write: if true; }
+      match /audits/{id}           { allow read, write: if true; }
+      match /vaccinations/{id}     { allow read, write: if true; }
+      match /workPermits/{id}      { allow read, write: if true; }
+      match /healthEducation/{id}  { allow read, write: if true; }
+      match /campaigns/{id}        { allow read, write: if true; }
+      match /waste/{id}            { allow read, write: if true; }
+      match /biomedicalWaste/{id}  { allow read, write: if true; }
+      match /biomedical/{id}       { allow read, write: if true; }
+      match /healthTracker/{id}    { allow read, write: if true; }
+      match /auditLog/{id}         { allow read, write: if true; }
+      match /settings/{doc}        { allow read, write: if true; }
+
+      match /users/{userId} {
+        allow read:   if true;
+        allow write:  if isSuperAdmin() || owns(merchantId);
+      }
+    }
+
+    match /config/{doc=**}     { allow read, write: if isSuperAdmin(); }
+    match /superAdmin/{doc=**} { allow read, write: if isSuperAdmin(); }
+    match /activity/{doc=**}   { allow read, write: if isSuperAdmin(); }
+  }
+}
