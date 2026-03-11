@@ -5,6 +5,7 @@ import { collection, getDocs, query, orderBy, limit, where } from 'firebase/fire
 import { useAuthStore } from '../../store/authStore';
 import { fmtDate, greeting } from '../../utils/formatters';
 import { calcIHI, gradeIHI, colorIHI } from '../../utils/ihi';
+import { AlertsWidget } from './SmartAlerts';
 
 // ─── OPD 7-Day Bar Chart ──────────────────────────────────────────────────────
 function OpdTrendChart({ data }) {
@@ -385,6 +386,9 @@ export default function StaffDashboard() {
               ))
             }
           </div>
+
+          {/* Smart Alerts */}
+          <AlertsWidget />
 
           {/* Quick Actions */}
           <div className="card overflow-hidden">

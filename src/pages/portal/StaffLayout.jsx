@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { roleIcon } from '../../utils/formatters';
+import { AlertsBell } from './SmartAlerts';
 
 import StaffDashboard from './StaffDashboard';
 import EmployeesPage from './Employees';
@@ -274,6 +275,8 @@ export default function StaffLayout() {
 
           {/* Right side */}
           <div className="ml-auto flex items-center gap-2">
+            {/* Alerts Bell */}
+            <AlertsBell />
             {/* Role pill */}
             <div className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold ${roleConf.bg} ${roleConf.text}`}>
               <div className="w-1.5 h-1.5 rounded-full" style={{ background: roleConf.dot }} />
