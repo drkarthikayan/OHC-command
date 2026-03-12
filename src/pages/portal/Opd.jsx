@@ -14,9 +14,30 @@ const VITALS_EMPTY = { bp:'', pulse:'', temp:'', spo2:'', weight:'', height:'' }
 const FREQUENCY_OPTIONS = ['Once daily','Twice daily','Three times daily','Four times daily','SOS (as needed)','Before food','After food','At bedtime'];
 const DURATION_OPTIONS = ['1 day','2 days','3 days','5 days','7 days','10 days','14 days','1 month'];
 
+const SHIFTS = ['General','Morning','Afternoon','Night'];
+const SHIFT_ICONS = { General:'☀️', Morning:'🌅', Afternoon:'🌤️', Night:'🌙' };
+const SHIFT_BG   = { General:'bg-blue-400/10',   Morning:'bg-amber-400/10',  Afternoon:'bg-orange-400/10', Night:'bg-indigo-400/10' };
+const SHIFT_TXT  = { General:'text-blue-400',     Morning:'text-amber-400',   Afternoon:'text-orange-400',  Night:'text-indigo-400'  };
+function shiftBadge(shift, small=true) {
+  const s = shift || 'General';
+  const cls = small
+    ? `text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${SHIFT_BG[s]||'bg-blue-400/10'} ${SHIFT_TXT[s]||'text-blue-400'}`
+    : `text-xs font-semibold px-2 py-0.5 rounded-full ${SHIFT_BG[s]||'bg-blue-400/10'} ${SHIFT_TXT[s]||'text-blue-400'}`;
+  return <span className={cls}>{SHIFT_ICONS[s]} {s}</span>;
+}
+
+function detectShift() {
+  const h = new Date().getHours();
+  if (h >= 6  && h < 14) return 'Morning';
+  if (h >= 14 && h < 22) return 'Afternoon';
+  if (h >= 22 || h < 6)  return 'Night';
+  return 'General';
+}
+
 const EMPTY_VISIT = {
   employeeId:'', employeeName:'', department:'',
   visitDate: new Date().toISOString().slice(0,10),
+  shift: detectShift(),
   complaint:'', complaints:[],
   vitals:{ ...VITALS_EMPTY },
   diagnosis:'', advice:'', followUp:'', doctorName:'', status:'Open',
@@ -186,6 +207,7 @@ export default function OpdPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
+  const [filterShift, setFilterShift] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [viewing, setViewing] = useState(null);
@@ -241,7 +263,7 @@ export default function OpdPage() {
 
   const openEdit = (v) => {
     setEditing(v);
-    setForm({...EMPTY_VISIT,...v, vitals:{...VITALS_EMPTY,...(v.vitals||{})}, complaints:v.complaints||[]});
+    setForm({...EMPTY_VISIT,...v, shift:v.shift||detectShift(), vitals:{...VITALS_EMPTY,...(v.vitals||{})}, complaints:v.complaints||[]});
     setPrescription((v.prescription||[]).map((rx,i)=>({...rx,_id:Date.now()+i})));
     setError('');
     setShowModal(true);
@@ -328,7 +350,8 @@ export default function OpdPage() {
   const filtered = visits.filter(v=>{
     const q=search.toLowerCase();
     return(!q||v.employeeName?.toLowerCase().includes(q)||v.complaint?.toLowerCase().includes(q)||v.diagnosis?.toLowerCase().includes(q))
-      &&(!filterStatus||v.status===filterStatus);
+      &&(!filterStatus||v.status===filterStatus)
+      &&(!filterShift||v.shift===filterShift);
   });
 
   const statusColor = {Open:'text-amber-400 bg-amber-400/10',Closed:'text-accent bg-accent/10','Follow-up':'text-blue-400 bg-blue-400/10'};
@@ -353,11 +376,15 @@ export default function OpdPage() {
           <option value="">All Statuses</option>
           <option>Open</option><option>Closed</option><option>Follow-up</option>
         </select>
+        <select className="field-input w-36" value={filterShift} onChange={e=>setFilterShift(e.target.value)}>
+          <option value="">All Shifts</option>
+          {SHIFTS.map(s=><option key={s}>{s}</option>)}
+        </select>
       </div>
 
       <div className="card overflow-hidden">
-        <div className="grid grid-cols-[2fr_2fr_1fr_80px_1fr_80px] gap-2 px-4 py-2.5 bg-surface2 border-b border-border">
-          {['Employee','Complaint','Date','Rx','Status',''].map(h=>(
+        <div className="grid grid-cols-[2fr_2fr_80px_80px_80px_1fr_80px] gap-2 px-4 py-2.5 bg-surface2 border-b border-border">
+          {['Employee','Complaint','Shift','Date','Rx','Status',''].map(h=>(
             <div key={h} className="text-[10px] font-bold uppercase tracking-wider text-muted">{h}</div>
           ))}
         </div>
@@ -369,7 +396,7 @@ export default function OpdPage() {
             <div className="text-muted text-sm">{visits.length===0?'No visits recorded yet.':'No results match your filters.'}</div>
           </div>
         ) : filtered.map(v=>(
-          <div key={v.id} className="grid grid-cols-[2fr_2fr_1fr_80px_1fr_80px] gap-2 px-4 py-3 border-b border-border/50 last:border-0 hover:bg-surface2/30 transition-colors items-center">
+          <div key={v.id} className="grid grid-cols-[2fr_2fr_80px_80px_80px_1fr_80px] gap-2 px-4 py-3 border-b border-border/50 last:border-0 hover:bg-surface2/30 transition-colors items-center">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="w-8 h-8 rounded-full bg-green/20 flex items-center justify-center text-xs font-bold text-accent shrink-0">{initials(v.employeeName)}</div>
               <div className="min-w-0">
@@ -378,6 +405,7 @@ export default function OpdPage() {
               </div>
             </div>
             <div className="text-sm text-muted truncate">{v.complaint||'—'}</div>
+            <div>{shiftBadge(v.shift)}</div>
             <div className="text-xs text-muted">{v.visitDate?fmtDate(v.visitDate):'—'}</div>
             <div>
               {v.prescription?.length > 0
@@ -432,8 +460,13 @@ export default function OpdPage() {
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <div><label className="field-label">Visit Date</label><input type="date" className="field-input" value={form.visitDate} onChange={e=>set('visitDate',e.target.value)}/></div>
+                <div><label className="field-label">Shift</label>
+                  <select className="field-input" value={form.shift} onChange={e=>set('shift',e.target.value)}>
+                    {SHIFTS.map(s=><option key={s}>{s}</option>)}
+                  </select>
+                </div>
                 <div><label className="field-label">Status</label>
                   <select className="field-input" value={form.status} onChange={e=>set('status',e.target.value)}>
                     <option>Open</option><option>Closed</option><option>Follow-up</option>
@@ -513,6 +546,7 @@ export default function OpdPage() {
                 <span className={`ml-auto text-xs font-medium px-2 py-0.5 rounded-full ${statusColor[viewing.status]||'text-muted'}`}>{viewing.status}</span>
               </div>
 
+              {viewing.shift && <div className="flex items-center gap-2">{shiftBadge(viewing.shift, false)} <span className="text-xs text-muted">Shift</span></div>}
               {viewing.complaint&&<div><div className="field-label">Complaint</div><div className="text-sm text-text">{viewing.complaint}</div></div>}
 
               {viewing.vitals&&Object.values(viewing.vitals).some(Boolean)&&(
