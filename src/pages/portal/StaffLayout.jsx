@@ -25,6 +25,7 @@ import DispensaryLogPage from './DispensaryLog';
 import AnnualHealthReportPage from './AnnualHealthReport';
 import ReferralsPage from './Referrals';
 import EmergencySOPPage from './EmergencySOP';
+import StatutoryReportsPage from './StatutoryReports';
 
 const NAV_GROUPS = [
   {
@@ -75,6 +76,7 @@ const NAV_GROUPS = [
     label: 'Reports',
     items: [
       { id: 'annual-report', label: 'Annual Health Report', icon: '◼', path: 'annual-report', roles: ['doctor','admin'] },
+      { id: 'statutory-reports', label: 'Statutory Reports', icon: '◼', path: 'statutory-reports', roles: ['doctor','admin'] },
       { id: 'referrals', label: 'Referral Management', icon: '◼', path: 'referrals', roles: ['doctor','admin'] },
     ],
   },
@@ -103,6 +105,7 @@ const NAV_ICONS = {
   'annual-report':    <IconBarChart />,
   'referrals':         <IconReferral />,
   'emergency-sop':     <IconEmergency />,
+  'statutory-reports':  <IconScroll />,
 };
 
 function IconGrid()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>; }
@@ -126,6 +129,7 @@ function IconSyringe()     { return <svg viewBox="0 0 16 16" fill="currentColor"
 function IconShield()      { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 1L2 3.5V8c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V3.5L8 1z" fillOpacity=".15"/><path d="M8 1L2 3.5V8c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V3.5L8 1z" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5.5 8l2 2 3-3" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>; }
 function IconGradCap()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 3L1 6.5l7 3.5 7-3.5L8 3z"/><path d="M4 8.5V12c0 1 1.8 2 4 2s4-1 4-2V8.5" fillOpacity=".3"/><path d="M13 6.5v3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>; }
 function IconReceipt()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M3 1h10a1 1 0 011 1v12l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5V2a1 1 0 011-1z" fillOpacity=".15"/><path d="M3 1h10a1 1 0 011 1v12l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5V2a1 1 0 011-1z" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5 5h6M5 8h6M5 11h4" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>; }
+function IconScroll()    { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M4 1h8a1 1 0 011 1v11a1 1 0 01-1 1H4a1 1 0 01-1-1V2a1 1 0 011-1zm1 3h6M5 7h6M5 9h4" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round"/></svg>; }
 function IconEmergency()  { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 1L1 14h14L8 1z" fillOpacity=".15" stroke="currentColor" strokeWidth="1.5" fill="none"/><path d="M8 6v3M8 11v1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>; }
 function IconReferral()  { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M3 8h7M8 5l3 3-3 3" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/><path d="M2 3h5a1 1 0 011 1v1M2 3v9a1 1 0 001 1h9a1 1 0 001-1V9"/></svg>; }
 function IconBarChart()    { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="1" y="9" width="3" height="6" rx="1"/><rect x="6" y="5" width="3" height="10" rx="1"/><rect x="11" y="2" width="3" height="13" rx="1"/></svg>; }
@@ -330,6 +334,7 @@ export default function StaffLayout() {
             <Route path="health-education" element={allItems.find(n=>n.id==='health-education') ? <HealthEducationPage />: <Forbidden />} />
             <Route path="dispensary-log" element={allItems.find(n=>n.id==='dispensary-log') ? <DispensaryLogPage />   : <Forbidden />} />
             <Route path="annual-report"  element={allItems.find(n=>n.id==='annual-report')  ? <AnnualHealthReportPage /> : <Forbidden />} />
+              <Route path="statutory-reports" element={allItems.find(n=>n.id==='statutory-reports') ? <StatutoryReportsPage /> : <Forbidden />} />
               <Route path="emergency-sop" element={allItems.find(n=>n.id==='emergency-sop') ? <EmergencySOPPage /> : <Forbidden />} />
               <Route path="referrals"     element={allItems.find(n=>n.id==='referrals')     ? <ReferralsPage />           : <Forbidden />} />
           </Routes>
