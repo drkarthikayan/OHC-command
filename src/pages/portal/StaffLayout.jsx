@@ -22,6 +22,7 @@ import VaccinationRegisterPage from './VaccinationRegister';
 import WorkPermitsPage from './WorkPermits';
 import HealthEducationPage from './HealthEducation';
 import DispensaryLogPage from './DispensaryLog';
+import AnnualHealthReportPage from './AnnualHealthReport';
 
 const NAV_GROUPS = [
   {
@@ -67,6 +68,12 @@ const NAV_GROUPS = [
       { id: 'biomedical-waste', label: 'Biomedical Waste',   icon: '◼', path: 'biomedical-waste', roles: ['doctor','nurse','admin'] },
     ],
   },
+  {
+    label: 'Reports',
+    items: [
+      { id: 'annual-report', label: 'Annual Health Report', icon: '◼', path: 'annual-report', roles: ['doctor','admin'] },
+    ],
+  },
 ];
 
 // Nav icon map (SVG-based — no emoji)
@@ -89,6 +96,7 @@ const NAV_ICONS = {
   'work-permits':     <IconShield />,
   'health-education': <IconGradCap />,
   'dispensary-log':   <IconReceipt />,
+  'annual-report':    <IconBarChart />,
 };
 
 function IconGrid()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>; }
@@ -112,6 +120,7 @@ function IconSyringe()     { return <svg viewBox="0 0 16 16" fill="currentColor"
 function IconShield()      { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 1L2 3.5V8c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V3.5L8 1z" fillOpacity=".15"/><path d="M8 1L2 3.5V8c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V3.5L8 1z" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5.5 8l2 2 3-3" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>; }
 function IconGradCap()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 3L1 6.5l7 3.5 7-3.5L8 3z"/><path d="M4 8.5V12c0 1 1.8 2 4 2s4-1 4-2V8.5" fillOpacity=".3"/><path d="M13 6.5v3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>; }
 function IconReceipt()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M3 1h10a1 1 0 011 1v12l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5V2a1 1 0 011-1z" fillOpacity=".15"/><path d="M3 1h10a1 1 0 011 1v12l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5V2a1 1 0 011-1z" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5 5h6M5 8h6M5 11h4" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>; }
+function IconBarChart()    { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="1" y="9" width="3" height="6" rx="1"/><rect x="6" y="5" width="3" height="10" rx="1"/><rect x="11" y="2" width="3" height="13" rx="1"/></svg>; }
 
 const ROLE_COLORS = {
   doctor:   { bg: 'bg-sky/10',     text: 'text-sky',      dot: '#3b82f6' },
@@ -312,6 +321,7 @@ export default function StaffLayout() {
             <Route path="work-permits"   element={allItems.find(n=>n.id==='work-permits')   ? <WorkPermitsPage />     : <Forbidden />} />
             <Route path="health-education" element={allItems.find(n=>n.id==='health-education') ? <HealthEducationPage />: <Forbidden />} />
             <Route path="dispensary-log" element={allItems.find(n=>n.id==='dispensary-log') ? <DispensaryLogPage />   : <Forbidden />} />
+            <Route path="annual-report"  element={allItems.find(n=>n.id==='annual-report')  ? <AnnualHealthReportPage /> : <Forbidden />} />
           </Routes>
         </main>
       </div>
