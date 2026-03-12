@@ -110,6 +110,7 @@ export default function StaffDashboard() {
   const [ihiEmployees, setIhiEmployees] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [shiftBreakdown, setShiftBreakdown] = useState({General:0,Morning:0,Afternoon:0,Night:0});
+  const [shiftBreakdown, setShiftBreakdown] = useState({General:0,Morning:0,Afternoon:0,Night:0});
 
   const tid = tenant?.id;
   const role = staffUser?.role || 'staff';
@@ -144,6 +145,9 @@ export default function StaffDashboard() {
       setStats({ employees: employees.length, opdToday: opdTodaySnap.size, lowStock, campaigns: campSnap.size, fit, unfit, restricted, pending: Math.max(0, pending) });
       const shiftMap = {General:0,Morning:0,Afternoon:0,Night:0};
       opdTodaySnap.docs.forEach(d=>{ const s=d.data().shift||'General'; shiftMap[s]!==undefined?shiftMap[s]++:shiftMap.General++; });
+      setShiftBreakdown(shiftMap);
+      const shiftMap = {General:0,Morning:0,Afternoon:0,Night:0};
+      opdTodaySnap.docs.forEach(d => { const s = d.data().shift||'General'; if(shiftMap[s]!==undefined) shiftMap[s]++; else shiftMap.General++; });
       setShiftBreakdown(shiftMap);
       setRecentOpd(recentSnap.docs.map(d => ({ id: d.id, ...d.data() })));
       setHospitalised(hospSnap.docs.map(d => ({ id: d.id, ...d.data() })));
