@@ -4,6 +4,7 @@ import { db } from '../../config/firebase';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import { useAuthStore } from '../../store/authStore';
 import { fmtDate } from '../../utils/formatters';
+import { exportPharmacyStock, ExportPdfButton } from './PdfExport';
 
 const CATEGORIES = ['Analgesic','Antibiotic','Antacid','Antihistamine','Antiseptic','Vitamin','ORS','First Aid','Injection','Syrup','Ointment','Other'];
 const UNITS = ['Tablets','Capsules','Syrup (ml)','Injection (vials)','Sachets','Tubes','Strips','Bottles'];
@@ -108,7 +109,10 @@ export default function PharmacyPage() {
           <p className="text-muted text-sm mt-0.5">{filtered.length} items · {lowCount > 0 && <span className="text-amber-400">{lowCount} low stock</span>}</p>
         </div>
         {canEdit && (
-          <button onClick={openAdd} className="btn-primary">+ Add Item</button>
+          <div className="flex items-center gap-2">
+            <ExportPdfButton onClick={() => exportPharmacyStock(filtered, tenant?.name)} label="Export PDF" />
+            <button onClick={openAdd} className="btn-primary">+ Add Item</button>
+          </div>
         )}
       </div>
 

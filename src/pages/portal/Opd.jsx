@@ -1,3 +1,4 @@
+import { exportOpdRegister, ExportPdfButton } from './PdfExport';
 import toast from 'react-hot-toast';
 import { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
@@ -112,9 +113,10 @@ export default function OpdPage() {
           <h1 className="font-serif text-3xl text-text">OPD / Visits</h1>
           <p className="text-muted text-sm mt-0.5">{filtered.length} visit records</p>
         </div>
-        {canEdit && (
-          <button onClick={openAdd} className="btn-primary">+ New Visit</button>
-        )}
+        <div className="flex items-center gap-2">
+           <ExportPdfButton onClick={() => exportOpdRegister(filtered, tenant?.name)} />
+          {canEdit && <button onClick={openAdd} className="btn-primary">+ New Visit</button>}
+        </div>
       </div>
 
       {/* Filters */}

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
-import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { fmtDate, initials } from '../../utils/formatters';
+import { exportEmployeeHealthPdf } from './PdfExport';
 
 // ─── IHI Score Engine ──────────────────────────────────────────────────────────
 function calcIHI(exams, vitals, opd) {
@@ -196,6 +197,12 @@ export default function EmployeeProfile({ emp, tid, onClose, onEdit }) {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              {!loading && (
+                <button
+                  onClick={() => exportEmployeeHealthPdf({ emp, opd, exams, vaccinations, injuries, tenantName: '' })}
+                  className="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+                >⬇ PDF</button>
+              )}
               {onEdit && (
                 <button onClick={onEdit} className="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors">
                   ✏️ Edit

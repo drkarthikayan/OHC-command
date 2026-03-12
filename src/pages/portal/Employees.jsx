@@ -5,6 +5,7 @@ import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimest
 import { useAuthStore } from '../../store/authStore';
 import { fmtDate, initials } from '../../utils/formatters';
 import EmployeeProfile from './EmployeeProfile';
+import { exportEmployeeList, ExportPdfButton } from './PdfExport';
 
 const DEPTS = ['General','Engineering','Production','Safety','HR','Admin','Accounts','Security','Logistics','IT'];
 const BLOOD_GROUPS = ['A+','A-','B+','B-','O+','O-','AB+','AB-'];
@@ -80,7 +81,12 @@ export default function EmployeesPage() {
           <h1 className="font-serif text-3xl text-text">Employees</h1>
           <p className="text-muted text-sm mt-0.5">{filtered.length} of {employees.length} employees · click a name to view health profile</p>
         </div>
-        {canEdit && <button onClick={openAdd} className="btn-primary">+ Add Employee</button>}
+        {canEdit && (
+          <div className="flex items-center gap-2">
+            <ExportPdfButton onClick={() => exportEmployeeList(employees, tenant?.name)} label="Export PDF" />
+            <button onClick={openAdd} className="btn-primary">+ Add Employee</button>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-3 mb-4">

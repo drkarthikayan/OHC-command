@@ -1,3 +1,4 @@
+import { exportVaccinationRegister, ExportPdfButton } from './PdfExport';
 import toast from 'react-hot-toast';
 import { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
@@ -71,7 +72,10 @@ export default function VaccinationRegister() {
     <div className="p-6 max-w-5xl">
       <div className="flex items-center justify-between mb-6">
         <div><h1 className="font-serif text-3xl font-semibold text-gray-900">Vaccination Register</h1><p className="text-gray-500 text-sm mt-0.5">Employee immunisation records and dose tracking</p></div>
-        {canEdit&&<button onClick={()=>{setEditing(null);setForm(EMPTY);setEmpSearch('');setShowForm(true);}} className="btn-primary">+ Record Vaccine</button>}
+        <div className="flex items-center gap-2">
+          <ExportPdfButton onClick={() => exportVaccinationRegister(filtered, tenant?.name)} />
+          {canEdit&&<button onClick={()=>{setEditing(null);setForm(EMPTY);setEmpSearch('');setShowForm(true);}} className="btn-primary">+ Record Vaccine</button>}
+        </div>
       </div>
 
       {(overdue>0||dueSoon>0)&&(
