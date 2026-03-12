@@ -109,6 +109,8 @@ export default function StaffDashboard() {
   const [ihiDist, setIhiDist] = useState([]);
   const [ihiEmployees, setIhiEmployees] = useState([]);
   const [alerts, setAlerts] = useState([]);
+  const [shiftBreakdown, setShiftBreakdown] = useState({General:0,Morning:0,Afternoon:0,Night:0});
+  const [shiftBreakdown, setShiftBreakdown] = useState({General:0,Morning:0,Afternoon:0,Night:0});
 
   const tid = tenant?.id;
   const role = staffUser?.role || 'staff';
@@ -141,6 +143,12 @@ export default function StaffDashboard() {
       const pending   = employees.length - fit - unfit - restricted;
 
       setStats({ employees: employees.length, opdToday: opdTodaySnap.size, lowStock, campaigns: campSnap.size, fit, unfit, restricted, pending: Math.max(0, pending) });
+      const shiftMap = {General:0,Morning:0,Afternoon:0,Night:0};
+      opdTodaySnap.docs.forEach(d=>{ const s=d.data().shift||'General'; shiftMap[s]!==undefined?shiftMap[s]++:shiftMap.General++; });
+      setShiftBreakdown(shiftMap);
+      const shiftMap = {General:0,Morning:0,Afternoon:0,Night:0};
+      opdTodaySnap.docs.forEach(d => { const s = d.data().shift||'General'; if(shiftMap[s]!==undefined) shiftMap[s]++; else shiftMap.General++; });
+      setShiftBreakdown(shiftMap);
       setRecentOpd(recentSnap.docs.map(d => ({ id: d.id, ...d.data() })));
       setHospitalised(hospSnap.docs.map(d => ({ id: d.id, ...d.data() })));
 
@@ -360,6 +368,34 @@ export default function StaffDashboard() {
 
         {/* Right column */}
         <div className="space-y-4">
+
+          {/* Shift Breakdown */}
+          <div className="card overflow-hidden">
+            <div className="card-header">
+              <span>🔄</span>
+              <h3 className="text-sm font-semibold text-text">Today by Shift</h3>
+              <span className="ml-auto text-xs bg-surface2 px-2 py-0.5 rounded-full text-muted">{stats.opdToday} total</span>
+            </div>
+            <div className="p-3 grid grid-cols-2 gap-2">
+              {[
+                { label:'Morning',   icon:'🌅', key:'Morning',   bg:'bg-amber-400/10',  txt:'text-amber-400'  },
+                { label:'Afternoon', icon:'🌤️', key:'Afternoon', bg:'bg-orange-400/10', txt:'text-orange-400' },
+                { label:'Night',     icon:'🌙', key:'Night',     bg:'bg-indigo-400/10', txt:'text-indigo-400' },
+                { label:'General',   icon:'☀️', key:'General',   bg:'bg-blue-400/10',   txt:'text-blue-400'   },
+              ].map(s => {
+                const n = shiftBreakdown[s.key] || 0;
+                return (
+                  <div key={s.key} className={`flex items-center gap-2 px-2.5 py-2 rounded-lg ${n > 0 ? s.bg : 'bg-surface2'}`}>
+                    <span className="text-sm">{s.icon}</span>
+                    <div className="min-w-0">
+                      <div className={`text-sm font-bold ${n > 0 ? s.txt : 'text-muted'}`}>{n}</div>
+                      <div className="text-[10px] text-muted">{s.label}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
 
           {/* Hospital Tracker */}
           <div className="card overflow-hidden">
