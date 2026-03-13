@@ -1,3 +1,4 @@
+import OnboardingWizard from './OnboardingWizard';
 import { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import {
@@ -226,6 +227,7 @@ export default function TenantsPage() {
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [showModal, setShowModal] = useState(false);
+  const [showWizard, setShowWizard] = useState(false);
   const [editTenant, setEditTenant] = useState(null);
   const [viewTenant, setViewTenant] = useState(null);
 
@@ -381,6 +383,7 @@ export default function TenantsPage() {
       </div>
 
       {/* Modals */}
+      {showWizard && <OnboardingWizard onClose={() => setShowWizard(false)} onComplete={() => setShowWizard(false)} />}
       {showModal && (
         <TenantModal
           tenant={editTenant}
