@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
+import BrandingSettingsPage from './BrandingSettings';
 import { roleIcon } from '../../utils/formatters';
 import { AlertsBell } from './SmartAlerts';
 
@@ -83,6 +84,7 @@ const NAV_GROUPS = [
       { id: 'mis-report', label: 'Monthly MIS Report', icon: '◼', path: 'mis-report', roles: ['doctor','admin'] },
       { id: 'appointments', label: 'Appointments', icon: '◼', path: 'appointments', roles: ['doctor','admin','nurse','staff'] },
       { id: 'compliance', label: 'Compliance Calendar', icon: '◼', path: 'compliance', roles: ['doctor','admin'] },
+      { id: 'branding', label: 'Branding & White-label', icon: '◼', path: 'branding', roles: ['admin'] },
       { id: 'ihi-trends', label: 'IHI Trend Charts', icon: '◼', path: 'ihi-trends', roles: ['doctor','admin'] },
       { id: 'statutory-reports', label: 'Statutory Reports', icon: '◼', path: 'statutory-reports', roles: ['doctor','admin'] },
       { id: 'referrals', label: 'Referral Management', icon: '◼', path: 'referrals', roles: ['doctor','admin'] },
@@ -118,6 +120,7 @@ const NAV_ICONS = {
   'mis-report':         <IconMIS />,
   'appointments':       <IconCalendar />,
   'compliance':         <IconShield />,
+  'branding':           <IconPalette />,
 };
 
 function IconGrid()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>; }
@@ -138,6 +141,7 @@ function IconLogout()   { return <svg viewBox="0 0 16 16" fill="currentColor" cl
 function IconCompass()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><circle cx="8" cy="8" r="6" fillOpacity=".15"/><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M10 6l-1.5 3.5L5 10l1.5-3.5L10 6z"/></svg>; }
 function IconCheckSquare() { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="2" y="2" width="12" height="12" rx="2" fillOpacity=".15"/><rect x="2" y="2" width="12" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5 8l2 2 4-3.5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>; }
 function IconSyringe()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M11.5 1.5l3 3-1 1-1-1-5 5 .5 1.5-1.5.5L7 11 4 14l-1-1 3-3-.5-.5 1-1.5 1.5.5 5-5-1-1 1-1z"/></svg>; }
+function IconPalette()   { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><circle cx="5" cy="5" r="1.5"/><circle cx="11" cy="5" r="1.5"/><circle cx="8" cy="10" r="1.5"/><path d="M8 2a6 6 0 100 12A6 6 0 008 2z" fill="none" stroke="currentColor" strokeWidth="1.5"/></svg>; }
 function IconShield()      { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 1L2 3.5V8c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V3.5L8 1z" fillOpacity=".15"/><path d="M8 1L2 3.5V8c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V3.5L8 1z" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5.5 8l2 2 3-3" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>; }
 function IconGradCap()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 3L1 6.5l7 3.5 7-3.5L8 3z"/><path d="M4 8.5V12c0 1 1.8 2 4 2s4-1 4-2V8.5" fillOpacity=".3"/><path d="M13 6.5v3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>; }
 function IconReceipt()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M3 1h10a1 1 0 011 1v12l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5V2a1 1 0 011-1z" fillOpacity=".15"/><path d="M3 1h10a1 1 0 011 1v12l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5V2a1 1 0 011-1z" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5 5h6M5 8h6M5 11h4" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>; }
@@ -158,6 +162,26 @@ const ROLE_COLORS = {
 };
 
 function Forbidden() {
+
+  // Load & apply branding on mount
+  useEffect(() => {
+    if (!tenant?.id) return;
+    import('../../config/firebase').then(({ db }) => {
+      import('firebase/firestore').then(({ doc, getDoc }) => {
+        getDoc(doc(db, `merchants/${tenant.id}/settings`, 'branding')).then(snap => {
+          if (!snap.exists()) return;
+          const b = snap.data();
+          const root = document.documentElement;
+          if (b.primaryColor) root.style.setProperty('--color-sage',   b.primaryColor);
+          if (b.primaryDark)  root.style.setProperty('--color-sage2',  b.primaryDark);
+          if (b.accentColor)  root.style.setProperty('--color-accent', b.accentColor);
+          if (b.bgColor)      root.style.setProperty('--color-bg',     b.bgColor);
+          if (b.textColor)    root.style.setProperty('--color-text',   b.textColor);
+        }).catch(() => {});
+      });
+    });
+  }, [tenant?.id]);
+
   return (
     <div className="flex flex-col items-center justify-center h-64 text-center p-8">
       <div className="w-14 h-14 rounded-2xl bg-rose/10 flex items-center justify-center mb-4">
@@ -208,7 +232,7 @@ export default function StaffLayout() {
           </div>
           {sidebarOpen && (
             <div className="min-w-0">
-              <div className="font-serif text-base font-semibold text-text leading-tight">OHC Command</div>
+              <div className="font-serif text-base font-semibold text-text leading-tight">{tenant?.displayName || tenant?.ohcName || 'OHC Command'}</div>
               <div className="text-[11px] text-muted truncate">{tenant?.name}</div>
             </div>
           )}
@@ -271,6 +295,26 @@ export default function StaffLayout() {
       </div>
     </div>
   );
+
+
+  // Load & apply branding on mount
+  useEffect(() => {
+    if (!tenant?.id) return;
+    import('../../config/firebase').then(({ db }) => {
+      import('firebase/firestore').then(({ doc, getDoc }) => {
+        getDoc(doc(db, `merchants/${tenant.id}/settings`, 'branding')).then(snap => {
+          if (!snap.exists()) return;
+          const b = snap.data();
+          const root = document.documentElement;
+          if (b.primaryColor) root.style.setProperty('--color-sage',   b.primaryColor);
+          if (b.primaryDark)  root.style.setProperty('--color-sage2',  b.primaryDark);
+          if (b.accentColor)  root.style.setProperty('--color-accent', b.accentColor);
+          if (b.bgColor)      root.style.setProperty('--color-bg',     b.bgColor);
+          if (b.textColor)    root.style.setProperty('--color-text',   b.textColor);
+        }).catch(() => {});
+      });
+    });
+  }, [tenant?.id]);
 
   return (
     <div className="flex h-screen bg-bg overflow-hidden">
@@ -349,6 +393,7 @@ export default function StaffLayout() {
             <Route path="health-education" element={allItems.find(n=>n.id==='health-education') ? <HealthEducationPage />: <Forbidden />} />
             <Route path="dispensary-log" element={allItems.find(n=>n.id==='dispensary-log') ? <DispensaryLogPage />   : <Forbidden />} />
             <Route path="annual-report"  element={allItems.find(n=>n.id==='annual-report')  ? <AnnualHealthReportPage /> : <Forbidden />} />
+              <Route path="branding" element={allItems.find(n=>n.id==='branding') ? <BrandingSettingsPage /> : <Forbidden />} />
               <Route path="compliance" element={allItems.find(n=>n.id==='compliance') ? <ComplianceCalendarPage /> : <Forbidden />} />
               <Route path="appointments" element={allItems.find(n=>n.id==='appointments') ? <AppointmentsPage /> : <Forbidden />} />
               <Route path="mis-report" element={allItems.find(n=>n.id==='mis-report') ? <MISReportPage /> : <Forbidden />} />
