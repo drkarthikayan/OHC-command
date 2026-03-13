@@ -1,4 +1,3 @@
-import { PWAInstallBanner, OfflineIndicator, PWAUpdateToast } from '../../components/PWAComponents';
 import { useEffect, useState } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
@@ -318,10 +317,6 @@ export default function StaffLayout() {
   }, [tenant?.id]);
 
   return (
-    <>
-      <OfflineIndicator />
-      <PWAInstallBanner />
-      <PWAUpdateToast />
     <div className="flex h-screen bg-bg overflow-hidden">
 
       {/* Desktop Sidebar */}
