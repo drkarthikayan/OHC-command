@@ -1,3 +1,4 @@
+import { PWAInstallBanner, OfflineIndicator, PWAUpdateToast } from '../../components/PWAComponents';
 import { useEffect, useState } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
@@ -183,6 +184,10 @@ function Forbidden() {
   }, [tenant?.id]);
 
   return (
+    <>
+    <OfflineIndicator />
+    <PWAInstallBanner />
+    <PWAUpdateToast />
     <div className="flex flex-col items-center justify-center h-64 text-center p-8">
       <div className="w-14 h-14 rounded-2xl bg-rose/10 flex items-center justify-center mb-4">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7 text-rose">
@@ -317,6 +322,10 @@ export default function StaffLayout() {
   }, [tenant?.id]);
 
   return (
+    <>
+    <OfflineIndicator />
+    <PWAInstallBanner />
+    <PWAUpdateToast />
     <div className="flex h-screen bg-bg overflow-hidden">
 
       {/* Desktop Sidebar */}
