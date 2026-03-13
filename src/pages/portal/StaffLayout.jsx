@@ -400,8 +400,7 @@ export default function StaffLayout() {
               <Route path="ihi-trends" element={allItems.find(n=>n.id==='ihi-trends') ? <IHITrendsPage /> : <Forbidden />} />
               <Route path="statutory-reports" element={allItems.find(n=>n.id==='statutory-reports') ? <StatutoryReportsPage /> : <Forbidden />} />
               <Route path="emergency-sop" element={allItems.find(n=>n.id==='emergency-sop') ? <EmergencySOPPage /> : <Forbidden />} />
-              <Route path="referrals"     element={allItems.find(n=>n.id==='referrals')     ? <ReferralsPage />       
-    </>    : <Forbidden />} />
+              <Route path="referrals"     element={allItems.find(n=>n.id==='referrals')     ? <ReferralsPage />     : <Forbidden />} />
           </Routes>
         </main>
       </div>
