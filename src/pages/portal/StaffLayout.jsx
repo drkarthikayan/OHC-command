@@ -3,7 +3,6 @@ import { Routes, Route, Link, useLocation, useNavigate, Navigate } from 'react-r
 import { useAuthStore } from '../../store/authStore';
 import BrandingSettingsPage from './BrandingSettings';
 import HRIntegrationPage from './HRIntegration';
-import HRIntegrationPage from './HRIntegration';
 import { roleIcon } from '../../utils/formatters';
 import { AlertsBell } from './SmartAlerts';
 
@@ -148,7 +147,6 @@ function IconCompass()     { return <svg viewBox="0 0 16 16" fill="currentColor"
 function IconCheckSquare() { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="2" y="2" width="12" height="12" rx="2" fillOpacity=".15"/><rect x="2" y="2" width="12" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5 8l2 2 4-3.5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>; }
 function IconSyringe()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M11.5 1.5l3 3-1 1-1-1-5 5 .5 1.5-1.5.5L7 11 4 14l-1-1 3-3-.5-.5 1-1.5 1.5.5 5-5-1-1 1-1z"/></svg>; }
 function IconHR()      { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M2 4h4v8H2zM10 4h4v8h-4zM6 7h4v2H6z"/></svg>; }
-function IconHR()      { return <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4"><circle cx="8" cy="5" r="2"/><path d="M3 13c0-2.76 2.24-5 5-5s5 2.24 5 5" strokeLinecap="round"/><path d="M11 2l1.5 1.5L11 5" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
 function IconPalette()   { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><circle cx="5" cy="5" r="1.5"/><circle cx="11" cy="5" r="1.5"/><circle cx="8" cy="10" r="1.5"/><path d="M8 2a6 6 0 100 12A6 6 0 008 2z" fill="none" stroke="currentColor" strokeWidth="1.5"/></svg>; }
 function IconShield()      { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 1L2 3.5V8c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V3.5L8 1z" fillOpacity=".15"/><path d="M8 1L2 3.5V8c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V3.5L8 1z" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5.5 8l2 2 3-3" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>; }
 function IconGradCap()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 3L1 6.5l7 3.5 7-3.5L8 3z"/><path d="M4 8.5V12c0 1 1.8 2 4 2s4-1 4-2V8.5" fillOpacity=".3"/><path d="M13 6.5v3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>; }
