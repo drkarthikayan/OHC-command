@@ -1,8 +1,17 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
+import { registerSW } from 'virtual:pwa-register';
 import './index.css';
 import App from './App.jsx';
+
+// Register service worker with auto-update
+registerSW({
+  onNeedRefresh() {},
+  onOfflineReady() {
+    console.log('OHC Command ready to work offline');
+  },
+});
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
