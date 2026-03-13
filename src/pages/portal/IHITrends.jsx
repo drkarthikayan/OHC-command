@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { collection, getDocs, query, orderBy, where } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { useAuthStore } from '../../store/authStore';
-import { calcIHI, getIHIGrade } from '../../utils/ihi';
+import { calcIHI, gradeIHI } from '../../utils/ihi';
 import toast from 'react-hot-toast';
 
 /* ── Tiny SVG line chart ── */
@@ -204,7 +204,7 @@ export default function IHITrends() {
     return {
       ...emp,
       score: result.total,
-      grade: getIHIGrade(result.total),
+      grade: gradeIHI(result.total),
       trend: getTrend(history),
       examCount: empExams.length,
     };
@@ -299,8 +299,8 @@ export default function IHITrends() {
                 <IHIGauge score={ihiScores[ihiScores.length - 1] || 0} />
                 <div className="mt-2 text-lg font-display font-bold text-text">{selEmp.name}</div>
                 <div className="text-xs text-muted">{selEmp.department} · {selEmp.employeeId}</div>
-                <div className={`mt-2 text-sm font-semibold ${gradeColor[getIHIGrade(ihiScores[ihiScores.length-1]||0)] || 'text-text'}`}>
-                  {getIHIGrade(ihiScores[ihiScores.length - 1] || 0)}
+                <div className={`mt-2 text-sm font-semibold ${gradeColor[gradeIHI(ihiScores[ihiScores.length-1]||0)] || 'text-text'}`}>
+                  {gradeIHI(ihiScores[ihiScores.length - 1] || 0)}
                 </div>
                 <div className={`mt-1.5 text-xs px-3 py-1 rounded-full font-medium ${trendConfig[getTrend(ihiScores)].bg} ${trendConfig[getTrend(ihiScores)].txt}`}>
                   {trendConfig[getTrend(ihiScores)].label}
