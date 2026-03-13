@@ -13,6 +13,7 @@ import UsersPage from './Users';
 import BillingPage from './Billing';
 import AnalyticsPage from './Analytics';
 import SettingsPage from './Settings';
+import WhiteLabelPage from './WhiteLabel';
 
 // ── NAV ITEMS ─────────────────────────────────────────────
 const NAV = [
@@ -22,6 +23,7 @@ const NAV = [
   { id: 'users',      label: 'Users',         icon: '👥', path: '/super-admin/users' },
   { id: 'analytics',  label: 'Analytics',     icon: '📊', path: '/super-admin/analytics' },
   { id: 'activity',   label: 'Activity Log',  icon: '🕐', path: '/super-admin/activity' },
+  { id: 'whitelabel', label: 'White-label',   icon: '🎨', path: '/super-admin/whitelabel' },
   { id: 'settings',   label: 'Settings',      icon: '⚙️', path: '/super-admin/settings' },
 ];
 
@@ -346,6 +348,7 @@ export default function SuperAdminLayout() {
           <Route path="users"      element={<UsersPage />} />
           <Route path="analytics"  element={<AnalyticsPage />} />
           <Route path="activity"   element={<ActivityLogView activity={activity} />} />
+          <Route path="whitelabel" element={<WhiteLabelPage />} />
           <Route path="settings"   element={<SettingsPage />} />
           <Route path="*"          element={<DashboardView stats={stats} tenants={tenants} activity={activity} loading={loading} />} />
         </Routes>
