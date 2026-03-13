@@ -284,7 +284,10 @@ export default function TenantsPage() {
           <h1 className="font-serif text-3xl text-text">Tenants</h1>
           <p className="text-muted text-sm mt-0.5">{tenants.length} companies on the platform</p>
         </div>
-        <button onClick={openCreate} className="btn-primary">🏢 New Tenant</button>
+        <div className="flex gap-2">
+          <button onClick={() => setShowWizard(true)} className="btn-secondary flex items-center gap-2">🧙 Onboarding Wizard</button>
+          <button onClick={openCreate} className="btn-primary">🏢 New Tenant</button>
+        </div>
       </div>
 
       {/* Filters */}
