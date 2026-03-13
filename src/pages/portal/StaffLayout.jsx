@@ -184,10 +184,6 @@ function Forbidden() {
   }, [tenant?.id]);
 
   return (
-    <>
-    <OfflineIndicator />
-    <PWAInstallBanner />
-    <PWAUpdateToast />
     <div className="flex flex-col items-center justify-center h-64 text-center p-8">
       <div className="w-14 h-14 rounded-2xl bg-rose/10 flex items-center justify-center mb-4">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7 text-rose">
@@ -323,9 +319,9 @@ export default function StaffLayout() {
 
   return (
     <>
-    <OfflineIndicator />
-    <PWAInstallBanner />
-    <PWAUpdateToast />
+      <OfflineIndicator />
+      <PWAInstallBanner />
+      <PWAUpdateToast />
     <div className="flex h-screen bg-bg overflow-hidden">
 
       {/* Desktop Sidebar */}
@@ -409,7 +405,8 @@ export default function StaffLayout() {
               <Route path="ihi-trends" element={allItems.find(n=>n.id==='ihi-trends') ? <IHITrendsPage /> : <Forbidden />} />
               <Route path="statutory-reports" element={allItems.find(n=>n.id==='statutory-reports') ? <StatutoryReportsPage /> : <Forbidden />} />
               <Route path="emergency-sop" element={allItems.find(n=>n.id==='emergency-sop') ? <EmergencySOPPage /> : <Forbidden />} />
-              <Route path="referrals"     element={allItems.find(n=>n.id==='referrals')     ? <ReferralsPage />           : <Forbidden />} />
+              <Route path="referrals"     element={allItems.find(n=>n.id==='referrals')     ? <ReferralsPage />       
+    </>    : <Forbidden />} />
           </Routes>
         </main>
       </div>
