@@ -28,6 +28,7 @@ import EmergencySOPPage from './EmergencySOP';
 import StatutoryReportsPage from './StatutoryReports';
 import IHITrendsPage from './IHITrends';
 import MISReportPage from './MISReport';
+import AppointmentsPage from './Appointments';
 
 const NAV_GROUPS = [
   {
@@ -79,6 +80,7 @@ const NAV_GROUPS = [
     items: [
       { id: 'annual-report', label: 'Annual Health Report', icon: '◼', path: 'annual-report', roles: ['doctor','admin'] },
       { id: 'mis-report', label: 'Monthly MIS Report', icon: '◼', path: 'mis-report', roles: ['doctor','admin'] },
+      { id: 'appointments', label: 'Appointments', icon: '◼', path: 'appointments', roles: ['doctor','admin','nurse','staff'] },
       { id: 'ihi-trends', label: 'IHI Trend Charts', icon: '◼', path: 'ihi-trends', roles: ['doctor','admin'] },
       { id: 'statutory-reports', label: 'Statutory Reports', icon: '◼', path: 'statutory-reports', roles: ['doctor','admin'] },
       { id: 'referrals', label: 'Referral Management', icon: '◼', path: 'referrals', roles: ['doctor','admin'] },
@@ -112,6 +114,7 @@ const NAV_ICONS = {
   'statutory-reports':  <IconScroll />,
   'ihi-trends':         <IconTrend />,
   'mis-report':         <IconMIS />,
+  'appointments':       <IconCalendar />,
 };
 
 function IconGrid()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>; }
@@ -135,6 +138,7 @@ function IconSyringe()     { return <svg viewBox="0 0 16 16" fill="currentColor"
 function IconShield()      { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 1L2 3.5V8c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V3.5L8 1z" fillOpacity=".15"/><path d="M8 1L2 3.5V8c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V3.5L8 1z" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5.5 8l2 2 3-3" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>; }
 function IconGradCap()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M8 3L1 6.5l7 3.5 7-3.5L8 3z"/><path d="M4 8.5V12c0 1 1.8 2 4 2s4-1 4-2V8.5" fillOpacity=".3"/><path d="M13 6.5v3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>; }
 function IconReceipt()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M3 1h10a1 1 0 011 1v12l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5V2a1 1 0 011-1z" fillOpacity=".15"/><path d="M3 1h10a1 1 0 011 1v12l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5V2a1 1 0 011-1z" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M5 5h6M5 8h6M5 11h4" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>; }
+function IconCalendar()  { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="1" y="3" width="14" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M1 7h14M5 1v4M11 1v4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>; }
 function IconMIS()       { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><rect x="1" y="9" width="3" height="5" rx="1"/><rect x="6" y="5" width="3" height="9" rx="1"/><rect x="11" y="1" width="3" height="13" rx="1"/></svg>; }
 function IconTrend()     { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M1 12l4-4 3 3 4-5 3 2" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
 function IconScroll()    { return <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M4 1h8a1 1 0 011 1v11a1 1 0 01-1 1H4a1 1 0 01-1-1V2a1 1 0 011-1zm1 3h6M5 7h6M5 9h4" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round"/></svg>; }
@@ -342,6 +346,7 @@ export default function StaffLayout() {
             <Route path="health-education" element={allItems.find(n=>n.id==='health-education') ? <HealthEducationPage />: <Forbidden />} />
             <Route path="dispensary-log" element={allItems.find(n=>n.id==='dispensary-log') ? <DispensaryLogPage />   : <Forbidden />} />
             <Route path="annual-report"  element={allItems.find(n=>n.id==='annual-report')  ? <AnnualHealthReportPage /> : <Forbidden />} />
+              <Route path="appointments" element={allItems.find(n=>n.id==='appointments') ? <AppointmentsPage /> : <Forbidden />} />
               <Route path="mis-report" element={allItems.find(n=>n.id==='mis-report') ? <MISReportPage /> : <Forbidden />} />
               <Route path="ihi-trends" element={allItems.find(n=>n.id==='ihi-trends') ? <IHITrendsPage /> : <Forbidden />} />
               <Route path="statutory-reports" element={allItems.find(n=>n.id==='statutory-reports') ? <StatutoryReportsPage /> : <Forbidden />} />
