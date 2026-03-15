@@ -1,5 +1,23 @@
 {
   "projects": {
-    "default": "ohc-portal-4f2f8"
-  }
+    "prod": "ohc-portal-4f2f8",
+    "uat": "ohc-portal-uat"
+  },
+  "targets": {
+    "ohc-portal-4f2f8": {
+      "hosting": {
+        "prod": [
+          "ohc-portal-4f2f8"
+        ]
+      }
+    },
+    "ohc-portal-uat": {
+      "hosting": {
+        "uat": [
+          "ohc-portal-uat"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
